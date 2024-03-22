@@ -1,0 +1,10 @@
+/__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+settings//__pycache__/
+settings/settings.env
