@@ -6,5 +6,6 @@
 instance/
 .webassets-cache
 
-settings//__pycache__/
-settings/settings.env
+backend/src/settings//__pycache__/
+backend/src/settings/settings.env
+
