@@ -1,49 +1,37 @@
 import os
 from settings import settings
 from flask import Flask, request, jsonify
-import requests
-import json
+import defs
 
 def create_app():
-    # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('GOOGLE_API_KEY'),
     )
    
-
-    # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
-    # a simple page that says hello
     @app.route('/login', methods=['POST', 'GET'])
     def login():
-        # phone = request.json['phone']
-        # pin = request.json['pin']
+        try:
+            phone = request.json['phone']
+            pin = request.json['pin']
+        except:
+            return jsonify({"error": "Invalid request", "code": 400})
 
-        url = "https://account.nextbike.pl/api/login"
-        headers = {
-            "Accept": "application/json, text/plain, */*",
-            "Content-Type": "application/json",
-            "Origin": "https://account.nextbike.pl",
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-Fetch-Mode": "cors",
-            "Referer": "https://account.nextbike.pl/pl-PL/vw",
-            "Accept-Language": "en-US,en;q=0.9",
-        }
-        data = {
-            "mobile": "48609990600",
-            "pin": "956324",
-            "city": "vw",
-        }
+        try:
+            cookie = defs.get_cookie(phone, pin)
+        except:
+            return jsonify({"error": "Invalid login credentials", "code": 401})
+        
+        try:
+            events = defs.get_events(cookie)
+        except: return jsonify({"error": "Something went wrong, try again", "code": 500})
 
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        response.raise_for_status()
-
-        return response.headers['set-cookie']
+        return events
 
     return app
