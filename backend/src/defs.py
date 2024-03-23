@@ -1,7 +1,7 @@
 import os
 from settings import settings
 from flask import Flask, request, jsonify
-import defs
+import datetime
 import requests
 import json
 
@@ -38,3 +38,13 @@ def get_events(cookie):
 
     print(response.status_code)
     return response.json()
+
+
+def filter_by_season(data, season):
+    filtered_data = []
+    for rental in data['rentals']:
+        start_time = datetime.datetime.fromtimestamp(rental['startTime']).year
+        end_time = datetime.datetime.fromtimestamp(rental['endTime']).year
+        if start_time == season and end_time == season:
+            filtered_data.append(rental)
+    return filtered_data
