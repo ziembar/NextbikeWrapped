@@ -12,3 +12,6 @@ backend/src/__pycache__/*
 backend/backenv/*
 
 
+settings.env
+.env
+.vscode/*

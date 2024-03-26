@@ -5,6 +5,7 @@ import defs
 from datetime import datetime
 
 
+
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
 
@@ -12,6 +13,7 @@ def create_app():
         SECRET_KEY=os.environ.get('GOOGLE_API_KEY'),
     )
    
+
     try:
         os.makedirs(app.instance_path)
     except OSError:
@@ -19,6 +21,7 @@ def create_app():
 
     @app.route('/api/login', methods=['POST'])
     def login():
+        print(app.config.get('GOOGLE_API_KEY'))
         try:
             phone = request.json['phone']
             pin = request.json['pin']
@@ -47,6 +50,14 @@ def create_app():
             return jsonify({"error": "Something went wrong, try again", "code": 500})
         
         filtered_data = defs.filter_by_season(events, int(season))
+
+
+        
+
+
+
+
+
 
         return jsonify({"data": filtered_data})
 

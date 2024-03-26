@@ -1,4 +1,3 @@
-import os
 from settings import settings
 from flask import Flask, request, jsonify
 import datetime
