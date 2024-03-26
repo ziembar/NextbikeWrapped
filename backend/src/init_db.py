@@ -15,13 +15,15 @@ auth = (config('NEO4J_USERNAME'), config('NEO4J_PASSWORD'))
 
 driver = GraphDatabase.driver(uri, auth=auth)
 
-for station in stations:
-    if station['bike'] == False:
-        print(station['name'], station['lat'], station['lng'])
+# for station in stations:
+    # if station['bike'] == False:
+        # print(station['name'], station['lat'], station['lng'])
 
 
-db_actions.add_station(driver, "test", 1, 2, "420")
 
+
+# db_actions.add_station(driver, "test", 1, 2, "420")
+print(db_actions.find_station_by_coordinates(driver, 1, 2))
 
 
 driver.close()  # close the driver object

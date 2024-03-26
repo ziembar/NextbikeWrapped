@@ -1,19 +1,14 @@
-import os
-from settings import settings
 from flask import Flask, request, jsonify
 import defs
+import os
+from decouple import config
 from datetime import datetime
 
 
 
 def create_app():
-    app = Flask(__name__, instance_relative_config=True)
-
-    app.config.from_mapping(
-        SECRET_KEY=os.environ.get('GOOGLE_API_KEY'),
-    )
+    app = Flask(__name__)
    
-
     try:
         os.makedirs(app.instance_path)
     except OSError:
