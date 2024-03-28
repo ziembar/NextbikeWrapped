@@ -1,4 +1,3 @@
-from settings import settings
 from flask import Flask, request, jsonify
 import datetime
 import requests
@@ -35,7 +34,6 @@ def get_events(cookie):
     }
     response = requests.get(url, headers=cookies, cookies=cookies)
 
-    print(response.status_code)
     return response.json()
 
 
@@ -47,3 +45,41 @@ def filter_by_season(data, season):
         if start_time == season and end_time == season:
             filtered_data.append(rental)
     return filtered_data
+
+def get_all_stations():
+    response = requests.get("https://api.nextbike.net/maps/nextbike-live.json?city=812")
+    return response.json()['countries'][0]['cities'][0]['places']
+
+
+def total_rides(data):
+    return len(data)
+
+def top_frequent_rides(data):
+    rides = {}
+    for rental in data:
+        if rental['startPlace']['name'] and rental['endPlace']['name']:
+            start_name = rental['startPlace']['name']
+            end_name = rental['endPlace']['name']
+            ride = f"{min(start_name, end_name)} <---> {max(start_name, end_name)}"
+            if ride in rides:
+                rides[ride] += 1
+            else:
+                rides[ride] = 1
+    sorted_rides = sorted(rides.items(), key=lambda x: x[1], reverse=True)
+    top_rides = sorted_rides[:3]
+    return top_rides
+
+
+def total_time(data):
+    total_time = 0
+    for rental in data:
+        duration = rental['endTime'] - rental['startTime']
+        total_time += duration
+    return round(total_time/60,1)
+
+
+def money_spent(data):
+    total_cost = 0
+    for rental in data:
+        total_cost += rental['price']
+    return total_cost/100

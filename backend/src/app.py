@@ -16,7 +16,6 @@ def create_app():
 
     @app.route('/api/login', methods=['POST'])
     def login():
-        print(app.config.get('GOOGLE_API_KEY'))
         try:
             phone = request.json['phone']
             pin = request.json['pin']
