@@ -49,13 +49,11 @@ def filter_by_season(data, season):
             filtered_data.append(rental)
     return filtered_data
 
-def get_all_stations():
+def get_all_stations(): #TODO expand project to include other cities
     response = requests.get("https://api.nextbike.net/maps/nextbike-live.json?city=812")
     return response.json()['countries'][0]['cities'][0]['places']
 
 
-def total_rides(data):
-    return len(data)
 
 def top_frequent_rides(data):
     rides = {}
@@ -94,6 +92,9 @@ def total_co2_saved(data):
         co2_saved = rental['co2']
         total_co2 += co2_saved
     return total_co2
+
+def total_rides(data):
+    return len(data)
 
 
 def filter_by_station(data, station):
