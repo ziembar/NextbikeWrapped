@@ -17,7 +17,7 @@ class Station(StructuredNode):
     lat = FloatProperty(index=True)
     lng = FloatProperty(index=True)
 
-    station = Relationship('Station', 'PATH')
+    stations = Relationship('Station', 'PATH')
 
 
 class Path(StructuredRel):

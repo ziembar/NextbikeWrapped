@@ -1,7 +1,4 @@
-import requests
 import defs
-from decouple import config
-from neo4j import GraphDatabase
 from Models import Station, getDriver
 
 #! WARNING: This script can overwrite the database 

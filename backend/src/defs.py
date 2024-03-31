@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify
+from decouple import config
+import db_actions
 import datetime
+from Models import getDriver, Station
 import requests
 import json
 
@@ -83,3 +86,142 @@ def money_spent(data):
     for rental in data:
         total_cost += rental['price']
     return total_cost/100
+
+
+def total_co2_saved(data):
+    total_co2 = 0
+    for rental in data:
+        co2_saved = rental['co2']
+        total_co2 += co2_saved
+    return total_co2
+
+
+def filter_by_station(data, station):
+    filtered_data = []
+    for rental in data:
+        start_station = rental['startPlace']['name']
+        end_station = rental['endPlace']['name']
+        if (start_station == station or end_station == station) and (not start_station == None and not end_station == None):
+            if end_station == station:
+                start_station = rental['endPlace']
+                rental['endPlace'] = rental['startPlace']
+                rental['startPlace'] = start_station
+            filtered_data.append(rental)
+    return filtered_data
+
+
+
+def group_rentals(data):
+    grouped_rentals = []
+    for rental in data:
+        start_station = rental['startPlace']['name']
+        end_station = rental['endPlace']['name']
+        found = False
+        for existing_rental in grouped_rentals:
+            if (existing_rental['startPlace']['name'] == start_station and existing_rental['endPlace']['name'] == end_station):
+                existing_rental['amount'] += 1
+                found = True
+                break
+        if not found:
+            rental['amount'] = 1
+            grouped_rentals.append(rental)
+    return grouped_rentals
+
+
+
+
+def total_distance(data):
+    total_distance = 0
+    stations = {}
+    for rental in data:
+        start_station = rental['startPlace']['name']
+        end_station = rental['endPlace']['name']
+        if(start_station == None or end_station == None):
+            continue
+        if start_station in stations:
+            stations[start_station] += 1
+        else:
+            stations[start_station] = 1
+        if end_station in stations:
+            stations[end_station] += 1
+        else:
+            stations[end_station] = 1
+    sorted_stations = sorted(stations.items(), key=lambda x: x[1], reverse=True)
+
+    for station in sorted_stations:
+        
+        if len(data) == 0:
+            break
+        filtered_data = filter_by_station(data, station[0])
+        if(len(filtered_data) == 0):
+            continue
+        grouped_rentals =  group_rentals(filtered_data)
+        db_result = db_actions.find_station_by_coordinates(getDriver(), grouped_rentals[0]['startPlace']['lat'], grouped_rentals[0]['startPlace']['lng'])
+
+        if len(db_result) != 0:
+            for record in db_result:
+                for grouped_rent in grouped_rentals:
+                    if record['d'].get('name') == grouped_rent['endPlace']['name']:
+                        total_distance += record['r'].get('distance') * grouped_rent['amount']
+                        grouped_rentals.remove(grouped_rent)
+                        break
+
+        
+        # send request to google, add to db, add to sum
+        data = [rec for rec in data if rec not in filtered_data]
+
+    for rental in data:
+        # send request for bikes left/rented not from stations, add to sum
+        print("no station rental", rental)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# cookie = get_cookie(config('TEST_NUMBER'), config('TEST_PIN'))
+
+# rents = get_events(cookie)
+
+# frents = filter_by_season(rents, 2024)
+
+# print(frents)
+# total_distance(frents)
+
+# defs.total_rides(frents)
+
+# defs.top_frequent_rides(frents)
+
+
+# # print(frents)
+# print(defs.money_spent(frents))
+
+
+
+
+# a=db_actions.find_station_by_coordinates(getDriver(), "52.290974", "20.929556")
+# print(a)
+# db_actions.add_distance_relation(getDriver(), 52.290974, 20.929556, 52.233682, 20.940959, 20120, 70)
+
+a=db_actions.find_station_by_coordinates(getDriver(), "52.290974", "20.929556")
+print(a[1]['s'].get('number'))
+# for v in a.values():
+#     print(v, '\n')
+
+# getDriver().close()
+

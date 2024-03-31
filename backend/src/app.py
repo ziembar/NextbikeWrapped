@@ -19,6 +19,12 @@ def create_app():
         try:
             phone = request.json['phone']
             pin = request.json['pin']
+
+            if not phone.isdigit() or not pin.isdigit():
+                return jsonify({"error": "Invalid phone number or pin", "code": 400})
+            if len(phone) == 9:
+                phone = "48" + phone
+                
         except:
             return jsonify({"error": "Invalid request", "code": 400})
 
@@ -44,13 +50,6 @@ def create_app():
             return jsonify({"error": "Something went wrong, try again", "code": 500})
         
         filtered_data = defs.filter_by_season(events, int(season))
-
-
-        
-
-
-
-
 
 
         return jsonify({"data": filtered_data})
