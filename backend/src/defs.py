@@ -101,6 +101,8 @@ def filter_by_station(data, station):
     for rental in data:
         start_station = rental['startPlace']['name']
         end_station = rental['endPlace']['name']
+        if start_station == end_station:
+            continue
         if (start_station == station or end_station == station) and (not start_station == None and not end_station == None):
             if end_station == station:
                 start_station = rental['endPlace']
@@ -158,13 +160,12 @@ def total_distance(data):
         grouped_rentals =  group_rentals(filtered_data)
         db_result = db_actions.find_station_by_coordinates(getDriver(), grouped_rentals[0]['startPlace']['lat'], grouped_rentals[0]['startPlace']['lng'])
 
-        if len(db_result) != 0:
+        for grouped_rent in grouped_rentals:
             for record in db_result:
-                for grouped_rent in grouped_rentals:
-                    if record['d'].get('name') == grouped_rent['endPlace']['name']:
-                        total_distance += record['r'].get('distance') * grouped_rent['amount']
-                        grouped_rentals.remove(grouped_rent)
-                        break
+                if record['d'].get('name') == grouped_rent['endPlace']['name']:
+                    total_distance += record['r'].get('distance') * grouped_rent['amount']
+                    grouped_rentals.remove(grouped_rent)
+                    break
 
         
         # send request to google, add to db, add to sum
@@ -173,6 +174,7 @@ def total_distance(data):
     for rental in data:
         # send request for bikes left/rented not from stations, add to sum
         print("no station rental", rental)
+    return total_distance
 
 
 
@@ -194,18 +196,14 @@ def total_distance(data):
 
 
 
-# cookie = get_cookie(config('TEST_NUMBER'), config('TEST_PIN'))
+cookie = get_cookie(config('TEST_NUMBER'), config('TEST_PIN'))
 
-# rents = get_events(cookie)
+rents = get_events(cookie)
 
-# frents = filter_by_season(rents, 2024)
+frents = filter_by_season(rents, 2024)
 
-# print(frents)
-# total_distance(frents)
+print(total_distance(frents))
 
-# defs.total_rides(frents)
-
-# defs.top_frequent_rides(frents)
 
 
 # # print(frents)
@@ -216,10 +214,10 @@ def total_distance(data):
 
 # a=db_actions.find_station_by_coordinates(getDriver(), "52.290974", "20.929556")
 # print(a)
-# db_actions.add_distance_relation(getDriver(), 52.290974, 20.929556, 52.233682, 20.940959, 20120, 70)
+db_actions.add_distance_relation(getDriver(), 52.131093, 21.06548, 52.133264, 21.074796, 1000, 5)
 
-a=db_actions.find_station_by_coordinates(getDriver(), "52.290974", "20.929556")
-print(a[1]['s'].get('number'))
+# a=db_actions.find_station_by_coordinates(getDriver(), "52.290974", "20.929556")
+# print(a[1]['s'].get('number'))
 # for v in a.values():
 #     print(v, '\n')
 
