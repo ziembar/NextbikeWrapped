@@ -102,8 +102,6 @@ def filter_by_station(data, station):
     for rental in data:
         start_station = rental['startPlace']['name']
         end_station = rental['endPlace']['name']
-        if start_station == end_station:
-            continue
         if (start_station == station or end_station == station) and (not start_station == None and not end_station == None):
             if end_station == station:
                 start_station = rental['endPlace']
@@ -139,6 +137,8 @@ def total_distance(data):
     for rental in data:
         start_station = rental['startPlace']['name']
         end_station = rental['endPlace']['name']
+        if start_station == end_station:
+            data.remove(rental)
         if(start_station == None or end_station == None):
             continue
         if start_station in stations:
@@ -152,7 +152,6 @@ def total_distance(data):
     sorted_stations = sorted(stations.items(), key=lambda x: x[1], reverse=True)
 
     for station in sorted_stations:
-        
         if len(data) == 0:
             break
         filtered_data = filter_by_station(data, station[0])
