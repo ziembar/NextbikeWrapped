@@ -1,10 +1,12 @@
-from flask import Flask, request, jsonify
+import time
 from decouple import config
 import db_actions
 import datetime
-from Models import getDriver, Station
+from Models import getDriver
 import requests
 import json
+import googlemaps
+
 
 
 def get_cookie(phone, pin):
@@ -46,6 +48,15 @@ def filter_by_season(data, season):
         start_time = datetime.datetime.fromtimestamp(rental['startTime']).year
         end_time = datetime.datetime.fromtimestamp(rental['endTime']).year
         if start_time == season and end_time == season:
+            filtered_data.append(rental)
+    return filtered_data
+
+
+def filter_last_week(data):
+    filtered_data = []
+    for rental in data['rentals']:
+        start_time = rental['startTime']
+        if start_time >= time.time() - 60*60*24*7:
             filtered_data.append(rental)
     return filtered_data
 
@@ -152,21 +163,28 @@ def total_distance(data):
     sorted_stations = sorted(stations.items(), key=lambda x: x[1], reverse=True)
 
     for station in sorted_stations:
+        # print("--------STATION: ", station, "-------")
         if len(data) == 0:
             break
         filtered_data = filter_by_station(data, station[0])
         if(len(filtered_data) == 0):
             continue
         grouped_rentals =  group_rentals(filtered_data)
+
         db_result = db_actions.find_station_by_coordinates(getDriver(), grouped_rentals[0]['startPlace']['lat'], grouped_rentals[0]['startPlace']['lng'])
 
-        for grouped_rent in grouped_rentals:
+        for grouped_rent in grouped_rentals.copy():
             for record in db_result:
+
+                # print("pulled from db: ", record['s'].get('name'),"<--->" , record['d'].get('name'))
+                # print("comparing ['d'] with: ", grouped_rent['endPlace']['name'])
                 if record['d'].get('name') == grouped_rent['endPlace']['name']:
+                    # print("its a match!")
                     total_distance += record['r'].get('distance') * grouped_rent['amount']
                     grouped_rentals.remove(grouped_rent)
                     break
-
+        if(len(grouped_rentals) != 0):
+            total_distance += distance_matrix_request(grouped_rentals)
         
         # send request to google, add to db, add to sum
         data = [rec for rec in data if rec not in filtered_data]
@@ -175,6 +193,31 @@ def total_distance(data):
         # send request for bikes left/rented not from stations, add to sum
         print("no station rental", rental)
     return total_distance
+
+
+def distance_matrix_request(rentals):
+    origin = {"lat": rentals[0]['startPlace']['lat'], "lng": rentals[0]['startPlace']['lng']}
+    destinations = []
+    for rent in rentals:
+       destinations.append({"lat": rent['endPlace']['lat'], "lng": rent['endPlace']['lng']})
+
+    
+    gmaps = googlemaps.Client(key = config('GOOGLE_API_KEY'))
+    result = gmaps.distance_matrix(origin, destinations, mode='bicycling')
+
+    print("1 request, destinations - ", len(destinations))
+    total_distance = 0
+
+    for dest, res in zip(rentals, result['rows'][0]['elements']):
+        db_actions.add_distance_relation(getDriver(), origin['lat'], origin['lng'], dest['endPlace']['lat'], \
+                                dest['endPlace']['lng'], res['distance']['value'], res['duration']['value'])
+        total_distance += res['distance']['value'] * dest['amount']
+    return total_distance
+
+    
+
+
+
 
 
 
@@ -201,6 +244,8 @@ cookie = get_cookie(config('TEST_NUMBER'), config('TEST_PIN'))
 rents = get_events(cookie)
 
 frents = filter_by_season(rents, 2024)
+
+
 
 print(total_distance(frents))
 
