@@ -8,11 +8,11 @@ def add_station(driver, name, lat, lng):
 
 
 def find_station_by_coordinates(driver, lat, lng):
-    lat = round(float(lat), 4)
-    lng = round(float(lng), 4)
+    lat = float(lat)
+    lng = float(lng)
     query = """
     MATCH (s:Station)-[r]-(d:Station)
-    WHERE round(s.lat, 4) = $lat AND round(s.lng, 4) = $lng
+    WHERE round(s.lat, 4) = round($lat, 4) AND round(s.lng, 4) = round($lng, 4)
     RETURN s, r, d
     """
     result = driver.execute_query(query, lat=lat, lng=lng, database_="neo4j")
@@ -30,9 +30,9 @@ def add_distance_relation(driver, lat1, lng1, lat2, lng2, distance, time):
 
     query = """
     MATCH (s1:Station)
-    WHERE round(s1.lat, 4) = $lat1 AND round(s1.lng, 4) = $lng1
+    WHERE round(s1.lat, 4) = round($lat1, 4) AND round(s1.lng, 4) = round($lng1, 4)
     MATCH (s2:Station)
-    WHERE round(s2.lat, 4) = $lat2 AND round(s2.lng, 4) = $lng2
+    WHERE round(s2.lat, 4) = round($lat2, 4) AND round(s2.lng, 4) = round($lng2, 4)
     MERGE (s1)-[r:PATH]->(s2)
     SET r.distance = $distance
     SET r.time = $time

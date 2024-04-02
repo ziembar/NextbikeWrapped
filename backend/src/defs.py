@@ -45,6 +45,8 @@ def get_events(cookie):
 def filter_by_season(data, season):
     filtered_data = []
     for rental in data['rentals']:
+        if rental['startPlace']['name'] == rental['endPlace']['name']:
+            continue
         start_time = datetime.datetime.fromtimestamp(rental['startTime']).year
         end_time = datetime.datetime.fromtimestamp(rental['endTime']).year
         if start_time == season and end_time == season:
@@ -82,30 +84,26 @@ def top_frequent_rides(data):
     return top_rides
 
 
-def total_time(data):
+def total_time_money_co2_calories(data):
     total_time = 0
+    total_cost = 0
+    total_co2 = 0
+    total_calories = 0
+
     for rental in data:
         duration = rental['endTime'] - rental['startTime']
         total_time += duration
-    return round(total_time/60,1)
 
-
-def money_spent(data):
-    total_cost = 0
-    for rental in data:
         total_cost += rental['price']
-    return total_cost/100
+
+        total_co2 += rental['co2']
+
+        total_calories += rental['calories']
+
+    return round(total_time/60,1), total_cost/100, total_co2, total_calories
 
 
-def total_co2_saved(data):
-    total_co2 = 0
-    for rental in data:
-        co2_saved = rental['co2']
-        total_co2 += co2_saved
-    return total_co2
 
-def total_rides(data):
-    return len(data)
 
 
 def filter_by_station(data, station):
@@ -120,6 +118,7 @@ def filter_by_station(data, station):
                 rental['startPlace'] = start_station
             filtered_data.append(rental)
     return filtered_data
+
 
 
 
@@ -148,8 +147,7 @@ def total_distance(data):
     for rental in data:
         start_station = rental['startPlace']['name']
         end_station = rental['endPlace']['name']
-        if start_station == end_station:
-            data.remove(rental)
+
         if(start_station == None or end_station == None):
             continue
         if start_station in stations:
@@ -196,6 +194,7 @@ def total_distance(data):
 
 
 def distance_matrix_request(rentals):
+    print(rentals)
     origin = {"lat": rentals[0]['startPlace']['lat'], "lng": rentals[0]['startPlace']['lng']}
     destinations = []
     for rent in rentals:
@@ -213,58 +212,3 @@ def distance_matrix_request(rentals):
                                 dest['endPlace']['lng'], res['distance']['value'], res['duration']['value'])
         total_distance += res['distance']['value'] * dest['amount']
     return total_distance
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-cookie = get_cookie(config('TEST_NUMBER'), config('TEST_PIN'))
-
-rents = get_events(cookie)
-
-frents = filter_by_season(rents, 2024)
-
-
-
-print(total_distance(frents))
-
-
-
-# # print(frents)
-# print(defs.money_spent(frents))
-
-
-
-
-# a=db_actions.find_station_by_coordinates(getDriver(), "52.290974", "20.929556")
-# print(a)
-db_actions.add_distance_relation(getDriver(), 52.131093, 21.06548, 52.133264, 21.074796, 1000, 5)
-
-# a=db_actions.find_station_by_coordinates(getDriver(), "52.290974", "20.929556")
-# print(a[1]['s'].get('number'))
-# for v in a.values():
-#     print(v, '\n')
-
-# getDriver().close()
-

@@ -3,6 +3,7 @@ import defs
 import os
 from decouple import config
 from datetime import datetime
+import defs
 
 
 
@@ -42,7 +43,7 @@ def create_app():
         current_year = datetime.now().year
 
         if season is None or not season.isdigit() or int(season) < 2015 or int(season) > current_year:
-            return jsonify({"error": "Provide a valid season year!", "code": 40})
+            return jsonify({"error": "Provide a valid season year!", "code": 400})
 
         try:
             events = defs.get_events(cookie)
@@ -52,6 +53,17 @@ def create_app():
         filtered_data = defs.filter_by_season(events, int(season))
 
 
-        return jsonify({"data": filtered_data})
+        total_time, total_money, total_co2, total_calories = defs.total_time_money_co2_calories(filtered_data)
+        return jsonify({
+            "total_rides": len(filtered_data),
+            "total_time": total_time,
+            "total_money": total_money,
+            "total_co2": total_co2,
+            "total_calories": total_calories,
+            "top_rides": defs.top_frequent_rides(filtered_data),
+            "total_distance": defs.total_distance(filtered_data),
+
+            "total_rides2": len(filtered_data),
+        })
 
     return app
