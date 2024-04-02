@@ -29,7 +29,10 @@ def get_cookie(phone, pin):
         response = requests.post(url, headers=headers, data=json.dumps(data))
         response.raise_for_status()
 
-        return response.headers['set-cookie']
+        print(response.json())
+        name = response.json().get("screen_name").split()[0].capitalize()
+
+        return response.headers['set-cookie'], name
 
 
 def get_events(cookie):
@@ -65,7 +68,6 @@ def filter_last_week(data):
 def get_all_stations(): #TODO expand project to include other cities
     response = requests.get("https://api.nextbike.net/maps/nextbike-live.json?city=812")
     return response.json()['countries'][0]['cities'][0]['places']
-
 
 
 def top_frequent_rides(data):
@@ -188,8 +190,7 @@ def total_distance(data):
         data = [rec for rec in data if rec not in filtered_data]
 
     for rental in data:
-        # send request for bikes left/rented not from stations, add to sum
-        print("no station rental", rental)
+        total_distance +=distance_matrix_request(rental)
     return total_distance
 
 
@@ -198,17 +199,19 @@ def distance_matrix_request(rentals):
     origin = {"lat": rentals[0]['startPlace']['lat'], "lng": rentals[0]['startPlace']['lng']}
     destinations = []
     for rent in rentals:
-       destinations.append({"lat": rent['endPlace']['lat'], "lng": rent['endPlace']['lng']})
+        destinations.append({"lat": rent['endPlace']['lat'], "lng": rent['endPlace']['lng']})
 
     
-    gmaps = googlemaps.Client(key = config('GOOGLE_API_KEY'))
+    gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
     result = gmaps.distance_matrix(origin, destinations, mode='bicycling')
 
     print("1 request, destinations - ", len(destinations))
     total_distance = 0
 
     for dest, res in zip(rentals, result['rows'][0]['elements']):
-        db_actions.add_distance_relation(getDriver(), origin['lat'], origin['lng'], dest['endPlace']['lat'], \
+        amount = dest.get('amount', 1)
+        if 'amount' in dest:
+            db_actions.add_distance_relation(getDriver(), origin['lat'], origin['lng'], dest['endPlace']['lat'], \
                                 dest['endPlace']['lng'], res['distance']['value'], res['duration']['value'])
-        total_distance += res['distance']['value'] * dest['amount']
+        total_distance += res['distance']['value'] * amount
     return total_distance

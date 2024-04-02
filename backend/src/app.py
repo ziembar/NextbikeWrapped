@@ -30,15 +30,19 @@ def create_app():
             return jsonify({"error": "Invalid request", "code": 400})
 
         try:
-            return jsonify({"cookie": defs.get_cookie(phone, pin)})
+            cookie, name = defs.get_cookie(phone, pin)
+            return jsonify({"cookie": cookie, "name": name})
         except:
             return jsonify({"error": "Invalid login credentials", "code": 401})
         
 
     @app.route('/api/summary', methods=['GET', 'POST'])
     def get_data():
-        season = request.args.get('season')
-        cookie = request.json['cookie']
+        try:
+            season = request.args.get('season')
+            cookie = request.json['cookie']
+        except:
+            return jsonify({"error": "Invalid request", "code": 400})
 
         current_year = datetime.now().year
 
@@ -47,9 +51,13 @@ def create_app():
 
         try:
             events = defs.get_events(cookie)
-        except: 
-            return jsonify({"error": "Something went wrong, try again", "code": 500})
+            if 'error' in events:
+                raise Exception("Something went wrong, try logging again")
+        except Exception as e: 
+            return jsonify({"error": str(e), "code": 500})
         
+        
+        print("events", events)
         filtered_data = defs.filter_by_season(events, int(season))
 
 
@@ -62,8 +70,6 @@ def create_app():
             "total_calories": total_calories,
             "top_rides": defs.top_frequent_rides(filtered_data),
             "total_distance": defs.total_distance(filtered_data),
-
-            "total_rides2": len(filtered_data),
         })
 
     return app
