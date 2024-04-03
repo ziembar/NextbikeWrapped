@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -10,21 +12,39 @@ import { Router } from '@angular/router';
 export class LoginComponent {
 
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(private apiService: ApiService, private router: Router, private formBuilder: FormBuilder) {}
 
-  login(event: Event, phone: string, pin: string) {
-    event.preventDefault();
-    console.log(event);
+
+  error = signal(false)
+
+  auth: FormGroup
+
+  ngOnInit() {
+    this.auth = this.formBuilder.group({
+      phone: [, [Validators.required, Validators.pattern(/^[0-9]{9}$/)]],
+      pin: [, [Validators.required, Validators.minLength(5), Validators.maxLength(6)]]
+    });
+  };
+
+
+
+
+
+  login() {
+
+    const phone = this.auth.get('phone').value
+    const pin = this.auth.get('pin').value
     this.apiService.login(phone, pin).subscribe((response: any) => {
       if(response.code !== 200) {
-        console.error('Login failed:', response);
+        this.error.set(true)
         return;
       }
       localStorage.setItem('cookie', response.cookie);
       localStorage.setItem('name', response.name);
       this.router.navigate(['/summary']);
     }, error => {
-      console.error('Login failed:', error);
+      this.error.set(true)
+        return;
     });
   }
 }

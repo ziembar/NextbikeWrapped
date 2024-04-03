@@ -1,12 +1,34 @@
-<div class="body">
-    <form class="container" (submit)="login($event, phone.value, pin.value)">
-        <div class="input-field">
-            <input type="text" placeholder="Phone Number" #phone>
+<div class="main">
+    <div class="left-panel">
+        <!-- Content for left panel -->
+        <h2 style="text-align: center; padding: 20px;">Welcome</h2>
+        <p style="text-align: center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <div class="img_holder">
+            <img src="../../assets/images/bike3.png" alt="bike" class="big-bike">
         </div>
-        <div class="input-field">
-            <input type="password" placeholder="PIN" #pin>
-        </div>
-        <button type="submit" class="submit-btn">Submit</button>
-    </form>
-  </div>
-  
+    </div>
+    <div class="right-panel">
+
+
+        <img src="../../assets/images/logo.png" alt="logo" class="logo">
+
+
+        <div class="baner">Zaloguj się do swojego konta Nextbike</div>
+        <form [formGroup]="auth" class="form">
+
+            <div class="p-fluid pfluid" style="width: 100%;">
+
+                <p-inputNumber placeholder="Wpisz numer telefonu" [useGrouping]="false" class="rect" formControlName="phone"  prefix="+48"> </p-inputNumber>
+                <p-password placeholder="Wpisz pin" class="rect" styleClass="p-password p-component p-inputwrapper p-input-icon-right"class="rect" formControlName="pin" [feedback]="false"></p-password>
+                
+                <p-button  class="rect button" label="Submit" [disabled]="!auth.valid"></p-button>
+            </div>
+            <div class="error" *ngIf="error()">
+            <span>Wprowadzono złe hasło!</span>
+            
+            </div>
+        </form>
+
+        
+    </div>
+</div>
