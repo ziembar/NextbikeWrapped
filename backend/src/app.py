@@ -24,8 +24,6 @@ def create_app():
             phone = request.json['phone']
             pin = request.json['pin']
 
-            # if not phone.isdigit() or not pin.isdigit():
-            #     return jsonify({"error": "Invalid phone number or pin", "code": 400})
             if len(phone) == 9:
                 phone = "48" + phone
                 
@@ -33,7 +31,6 @@ def create_app():
             return jsonify({"error": "Invalid request", "code": 400})
 
         try:
-            print("phone", phone, "pin", pin)
             cookie, name = defs.get_cookie(phone, pin)
             return jsonify({"cookie": cookie, "name": name, "code": 200})
         except:
@@ -60,10 +57,7 @@ def create_app():
         except Exception as e: 
             return jsonify({"error": str(e), "code": 500})
         
-        
-        print("events", events)
         filtered_data = defs.filter_by_season(events, int(season))
-
 
         total_time, total_money, total_co2, total_calories = defs.total_time_money_co2_calories(filtered_data)
         return jsonify({
