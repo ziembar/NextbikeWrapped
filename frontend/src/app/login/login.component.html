@@ -1,0 +1,12 @@
+<div class="body">
+    <form class="container" (submit)="login($event, phone.value, pin.value)">
+        <div class="input-field">
+            <input type="text" placeholder="Phone Number" #phone>
+        </div>
+        <div class="input-field">
+            <input type="password" placeholder="PIN" #pin>
+        </div>
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+  </div>
+  

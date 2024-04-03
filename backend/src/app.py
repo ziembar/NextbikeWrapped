@@ -4,11 +4,13 @@ import os
 from decouple import config
 from datetime import datetime
 import defs
+from flask_cors import CORS
 
 
 
 def create_app():
     app = Flask(__name__)
+    CORS(app, origins=['http://127.0.0.1:4200', 'http://localhost:4200'])
    
     try:
         os.makedirs(app.instance_path)
@@ -18,11 +20,12 @@ def create_app():
     @app.route('/api/login', methods=['POST'])
     def login():
         try:
+            print("request", request.json)
             phone = request.json['phone']
             pin = request.json['pin']
 
-            if not phone.isdigit() or not pin.isdigit():
-                return jsonify({"error": "Invalid phone number or pin", "code": 400})
+            # if not phone.isdigit() or not pin.isdigit():
+            #     return jsonify({"error": "Invalid phone number or pin", "code": 400})
             if len(phone) == 9:
                 phone = "48" + phone
                 
@@ -30,8 +33,9 @@ def create_app():
             return jsonify({"error": "Invalid request", "code": 400})
 
         try:
+            print("phone", phone, "pin", pin)
             cookie, name = defs.get_cookie(phone, pin)
-            return jsonify({"cookie": cookie, "name": name})
+            return jsonify({"cookie": cookie, "name": name, "code": 200})
         except:
             return jsonify({"error": "Invalid login credentials", "code": 401})
         
