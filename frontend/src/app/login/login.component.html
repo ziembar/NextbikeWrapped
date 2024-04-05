@@ -1,11 +1,31 @@
 <div class="main">
     <div class="left-panel">
         <!-- Content for left panel -->
-        <h2 style="text-align: center; padding: 20px;">Welcome</h2>
-        <p style="text-align: center;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-        <div class="img_holder">
-            <img src="../../assets/images/bike3.png" alt="bike" class="big-bike">
+        <div class="pfluid2">
+
+            <p class="text-1">Każdy lubi statystyki...</p>
+            
+
+            <p class="text-2">Noo to sprawdź swoje --></p>
         </div>
+        
+
+        <!-- <div class="img_holder">
+            <img src="../../assets/images/bike3.png" alt="bike" class="big-bike">
+        </div> -->
+
+        <div class="footer-wrapper">
+            <div class="footer">
+
+                <p-button size="small" class="circle-link" [outlined]="true" icon="pi pi-github" [rounded]="true" severity="secondary"></p-button>
+                <p-button size="small" class="circle-link" [outlined]="true"  icon="pi pi-instagram" [rounded]="true" severity="warning"></p-button>
+                <p-button size="small" class="circle-link" [outlined]="true" icon="pi pi-facebook" [rounded]="true" severity=""></p-button>
+            </div>
+        </div>
+        
+
+
+
     </div>
     <div class="right-panel">
 
@@ -14,17 +34,19 @@
 
 
         <div class="baner">Zaloguj się do swojego konta Nextbike</div>
-        <form [formGroup]="auth" class="form">
+        <form [formGroup]="auth" class="form" (ngSubmit)="login()">
 
             <div class="p-fluid pfluid" style="width: 100%;">
 
                 <p-inputNumber placeholder="Wpisz numer telefonu" [useGrouping]="false" class="rect" formControlName="phone"  prefix="+48"> </p-inputNumber>
                 <p-password placeholder="Wpisz pin" class="rect" styleClass="p-password p-component p-inputwrapper p-input-icon-right"class="rect" formControlName="pin" [feedback]="false"></p-password>
                 
-                <p-button  class="rect button" label="Submit" [disabled]="!auth.valid"></p-button>
+                <p-button  class="rect button" label="Submit" type="submit" [disabled]="!auth.valid" (onclick)="login()"></p-button>
             </div>
+            <i class="pi pi-spin pi-spinner" *ngIf="loading()"></i>
+
             <div class="error" *ngIf="error()">
-            <span>Wprowadzono złe hasło!</span>
+            <span>{{error_message}}</span>
             
             </div>
         </form>

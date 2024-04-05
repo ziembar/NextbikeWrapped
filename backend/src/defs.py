@@ -29,7 +29,6 @@ def get_cookie(phone, pin):
         response = requests.post(url, headers=headers, data=json.dumps(data))
         response.raise_for_status()
 
-        print(response.json())
         name = response.json().get("screen_name").split()[0].capitalize()
 
         return response.headers['set-cookie'], name
@@ -45,14 +44,14 @@ def get_events(cookie):
     return response.json()
 
 
-def filter_by_season(data, season):
+def filter_by_season(data, time):
     filtered_data = []
     for rental in data['rentals']:
         if rental['startPlace']['name'] == rental['endPlace']['name']:
             continue
-        start_time = datetime.datetime.fromtimestamp(rental['startTime']).year
-        end_time = datetime.datetime.fromtimestamp(rental['endTime']).year
-        if start_time == season and end_time == season:
+        start_time = rental['startTime']
+        end_time = rental['endTime']
+        if start_time > time and end_time > time:
             filtered_data.append(rental)
     return filtered_data
 
@@ -195,7 +194,6 @@ def total_distance(data):
 
 
 def distance_matrix_request(rentals):
-    print(rentals)
     origin = {"lat": rentals[0]['startPlace']['lat'], "lng": rentals[0]['startPlace']['lng']}
     destinations = []
     for rent in rentals:

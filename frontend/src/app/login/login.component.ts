@@ -16,6 +16,10 @@ export class LoginComponent {
 
 
   error = signal(false)
+  loading = signal(false)
+
+  error_message = 'Wprowadzono niepoprawne dane. Spróbuj ponownie.'
+
 
   auth: FormGroup
 
@@ -31,20 +35,27 @@ export class LoginComponent {
 
 
   login() {
-
+    this.loading.set(true)
     const phone = this.auth.get('phone').value
     const pin = this.auth.get('pin').value
     this.apiService.login(phone, pin).subscribe((response: any) => {
       if(response.code !== 200) {
+        this.error_message = response.message ?? 'Wprowadzono niepoprawne dane. Spróbuj ponownie.'
         this.error.set(true)
+        this.loading.set(false)
         return;
       }
+      this.loading.set(false)
       localStorage.setItem('cookie', response.cookie);
       localStorage.setItem('name', response.name);
       this.router.navigate(['/summary']);
     }, error => {
+      this.loading.set(false)
+      this.error_message = error.statusText ?? 'Wystąpił nieznany błąd. Spróbuj ponownie później.'
+
       this.error.set(true)
         return;
     });
   }
 }
+

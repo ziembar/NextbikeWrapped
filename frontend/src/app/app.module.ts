@@ -9,18 +9,20 @@ import { LoginComponent } from './login/login.component';
 import { ApiService } from './services/api.service';
 import { SummaryComponent } from './summary/summary.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SeasonSelectionComponent } from './season-selection/season-selection.component';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PasswordModule } from 'primeng/password';
+import { SeasonSelectionComponent } from './summary/season-selection/season-selection.component';
+import { StatisticsComponent } from './summary/statistics/statistics.component';
 
 @NgModule({
 declarations: [
     LoginComponent,
-    SeasonSelectionComponent,
     SummaryComponent,
-    AppComponent
-],
+    AppComponent,
+    SeasonSelectionComponent,
+    StatisticsComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -37,7 +39,8 @@ declarations: [
     ButtonModule,
     InputNumberModule,
     PasswordModule,
-
+    // SeasonSelectionModule,
+    // StatisticsModule
 
   ],
   providers: [
@@ -46,7 +49,7 @@ declarations: [
   bootstrap: [
     AppComponent
   ],
-  exports: [RouterModule]
+  exports: [RouterModule, SeasonSelectionComponent, StatisticsComponent]
 
 })
 export class AppModule { }

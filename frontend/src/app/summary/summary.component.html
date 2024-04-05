@@ -1,0 +1,10 @@
+<div *ngIf="season() === null">
+    <app-season-selection (season) = season.set($event)></app-season-selection>
+</div>
+
+
+
+<div *ngIf="season() !== null">
+    <app-statistics  [season]="season()"  [data]="data()"></app-statistics>
+</div>
+

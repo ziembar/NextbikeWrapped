@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-import defs
 import os
 from decouple import config
 from datetime import datetime
@@ -10,23 +9,21 @@ from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, origins=['http://127.0.0.1:4200', 'http://localhost:4200'])
+    CORS(app)
    
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
-    @app.route('/api/login', methods=['POST'])
+    @app.route('/api/login', methods=['POST', 'GET', 'OPTIONS'])
     def login():
         try:
-            print("request", request.json)
-            phone = request.json['phone']
+            phone = str(request.json['phone'])
             pin = request.json['pin']
 
-            if len(phone) == 9:
-                phone = "48" + phone
-                
+            phone = "48" + phone
+      
         except:
             return jsonify({"error": "Invalid request", "code": 400})
 
@@ -37,17 +34,17 @@ def create_app():
             return jsonify({"error": "Invalid login credentials", "code": 401})
         
 
-    @app.route('/api/summary', methods=['GET', 'POST'])
+    @app.route('/api/summary', methods=['GET', 'POST', 'OPTIONS'])
     def get_data():
         try:
-            season = request.args.get('season')
+            time = float(request.json['time'])
             cookie = request.json['cookie']
         except:
             return jsonify({"error": "Invalid request", "code": 400})
 
-        current_year = datetime.now().year
+        current_time = datetime.now().timestamp()
 
-        if season is None or not season.isdigit() or int(season) < 2015 or int(season) > current_year:
+        if time is None or time > current_time:
             return jsonify({"error": "Provide a valid season year!", "code": 400})
 
         try:
@@ -57,7 +54,7 @@ def create_app():
         except Exception as e: 
             return jsonify({"error": str(e), "code": 500})
         
-        filtered_data = defs.filter_by_season(events, int(season))
+        filtered_data = defs.filter_by_season(events, time)
 
         total_time, total_money, total_co2, total_calories = defs.total_time_money_co2_calories(filtered_data)
         return jsonify({
