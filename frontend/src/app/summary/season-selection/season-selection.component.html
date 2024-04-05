@@ -1,4 +1,16 @@
 <div class="main">
 <p class="text-1">Wybierz okres czasu do podsumowania</p>
 
-</div>
+<ng-container>
+  <div class="seasons">
+    <div class="season" *ngFor="let season of seasons">
+      <p-button
+        class="season-button"
+        (click)="selectSeason(season.value)"
+      >
+        {{ season.name }}
+      </p-button>
+    </div>
+  </div>
+
+</ng-container>

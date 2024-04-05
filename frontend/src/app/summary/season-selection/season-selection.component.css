@@ -11,10 +11,30 @@ body {
     padding: 0;
 }
 
+.seasons {
+    width: 100%;
+}
+.season {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding: 12px;
+}
+
+::ng-deep .p-button {
+    background-color: #666bc0 !important;
+    width: 100%;
+    color: white !important;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+
+
 .main {
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 70%;
     height: 100vh;
     justify-content: center;
     align-items: center;

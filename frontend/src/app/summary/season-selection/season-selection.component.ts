@@ -7,13 +7,24 @@ import { Router } from '@angular/router';
   styleUrls: ['./season-selection.component.css']
 })
 export class SeasonSelectionComponent {
-  @Input() season = new EventEmitter<string>();
+  @Output() seasonChange = new EventEmitter<number>();
 
 
   constructor(private router: Router) {};
 
 
-  setSeason() {
-    this.season.emit('2021');
+  seasons: {name: number, value: number}[] = []
+  ngOnInit() {
+    for(let name = new Date().getFullYear(); name >= 2022; name--) {
+      let value = new Date(`${name}/01/01 11:24:00`).getTime()
+    this.seasons.push({name, value});
+  }
+
+}
+
+
+  selectSeason(season: number) {
+    console.log('Selected season:', season);
+    this.seasonChange.emit(season);
   }
 }

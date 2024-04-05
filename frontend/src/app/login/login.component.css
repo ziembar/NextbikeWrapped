@@ -74,15 +74,6 @@ body {
 
 }
 
-@layer primeng {
-    .p-button {
-    background: #666bc0 !important;
-}
-.p-button :hover {
-    background: #9899b5 !important;
-}
-}
-
 
 
 .auth {
@@ -140,6 +131,13 @@ body {
     font-size: 30px;
     margin-top: 72px;
 }
+
+::ng-deep .rect > .p-button {
+    background: #6a92aa !important;
+}
+
+
+
 
 .footer {
     width: 100%;

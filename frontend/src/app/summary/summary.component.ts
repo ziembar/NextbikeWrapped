@@ -15,6 +15,11 @@ export class SummaryComponent {
     season = signal(null) // Retrieve selected season from localStorage or elsewhere
     data: any = [];
 
+    setSeason(season: number) {
+      console.log('Setting season:', season);
+      this.season.set(season);
+    }
+
     getData(){
       let token = '';
       try{

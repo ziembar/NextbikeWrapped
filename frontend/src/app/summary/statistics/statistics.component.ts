@@ -27,8 +27,5 @@ export class StatisticsComponent{
       this.router.navigate(['/login']);
     }
   }
-  selectSeason() {
-    // Save selected season in localStorage or pass as parameter
-    // Redirect to data display page
-  }
+
 }
