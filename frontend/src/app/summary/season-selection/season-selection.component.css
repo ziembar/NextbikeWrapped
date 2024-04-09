@@ -27,7 +27,9 @@ body {
     color: white !important;
     font-weight: bold;
     margin-top: 10px;
+    border-radius: 6px !important;
 }
+
 
 
 
@@ -78,6 +80,8 @@ body {
     justify-content: center;
 }
 
+
+
 .baner {
     padding: 42px;
     width: 80%;
@@ -104,6 +108,13 @@ body {
     background: #9899b5 !important;
 }
 }
+
+:host ::ng-deep .p-calendar {
+    width: 100% !important;
+
+}
+
+:host ::ng-deep p-calendar > span > input { display: none; }
 
 
 

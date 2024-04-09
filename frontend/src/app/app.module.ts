@@ -12,8 +12,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PasswordModule } from 'primeng/password';
+import { CalendarModule } from 'primeng/calendar';
+
+
 import { SeasonSelectionComponent } from './summary/season-selection/season-selection.component';
 import { StatisticsComponent } from './summary/statistics/statistics.component';
+
 
 @NgModule({
 declarations: [
@@ -39,12 +43,12 @@ declarations: [
     ButtonModule,
     InputNumberModule,
     PasswordModule,
-    // SeasonSelectionModule,
-    // StatisticsModule
+    CalendarModule
+
 
   ],
   providers: [
-    ApiService // Add ApiService to providers
+    ApiService
   ],
   bootstrap: [
     AppComponent

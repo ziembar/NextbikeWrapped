@@ -7,9 +7,34 @@
       <p-button
         class="season-button"
         (click)="selectSeason(season.value)"
-      >
+        ><span style="margin: auto;">
         {{ season.name }}
+        </span>
       </p-button>
+    </div>
+    <div class="season">
+      <p-calendar
+        #calendar
+        [touchUI]="true"
+        [showIcon]="true"
+        [showButtonBar]="false"
+        selectionMode="range"
+        [showSeconds]="true"
+        [showOnFocus]="false">
+        <ng-template pTemplate="footer">
+          <div class="calendar-footer">
+            <p-button
+              label="Anuluj"
+              class="calendar-button"
+            ></p-button>
+            <p-button
+              label="Zatwierdź"
+              class="calendar-button"
+            ></p-button>
+          </div>
+
+      </ng-template>
+      </p-calendar>
     </div>
   </div>
 
