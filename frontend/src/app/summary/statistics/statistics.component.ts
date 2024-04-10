@@ -14,7 +14,7 @@ export class StatisticsComponent{
 
 
   @Input() data: any[];
-  @Input() season: string;
+  @Input() season: {name: undefined, startValue: undefined, endValue: undefined};
   @Input() name: string;
 
 

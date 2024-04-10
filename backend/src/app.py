@@ -16,7 +16,7 @@ def create_app():
     except OSError:
         pass
 
-    @app.route('/api/login', methods=['POST', 'GET', 'OPTIONS'])
+    @app.route('/api/login', methods=['POST', 'GET'])
     def login():
         try:
             phone = str(request.json['phone'])
@@ -25,46 +25,54 @@ def create_app():
             phone = "48" + phone
       
         except:
-            return jsonify({"error": "Invalid request", "code": 400})
+            return "Invalid request", 400
 
         try:
             cookie, name = defs.get_cookie(phone, pin)
             return jsonify({"cookie": cookie, "name": name, "code": 200})
         except:
-            return jsonify({"error": "Invalid login credentials", "code": 401})
+            return "Invalid login credentials", 401
         
 
-    @app.route('/api/summary', methods=['GET', 'POST', 'OPTIONS'])
+    @app.route('/api/summary', methods=['GET', 'POST'])
     def get_data():
+        
         try:
-            time = float(request.json['time'])
-            cookie = request.json['cookie']
+            start = int(request.json['start'])
+            end = int(request.json['end'])
+            cookie = str(request.json['cookie'])
+
         except:
-            return jsonify({"error": "Invalid request", "code": 400})
+            return "Invalid request", 400
 
-        current_time = datetime.now().timestamp()
+        current_time = int(datetime.now().timestamp())
 
-        if time is None or time > current_time:
-            return jsonify({"error": "Provide a valid season year!", "code": 400})
+        if start is None or start > current_time or end is None or end < start :
+            return "Provide a valid time range!", 400
 
         try:
             events = defs.get_events(cookie)
             if 'error' in events:
                 raise Exception("Something went wrong, try logging again")
         except Exception as e: 
-            return jsonify({"error": str(e), "code": 500})
+            return str(e), 500
         
-        filtered_data = defs.filter_by_season(events, time)
+        try:
+            filtered_data = defs.filter_by_season(events, start, end)
+            total_time, total_money, total_co2, total_calories = defs.total_time_money_co2_calories(filtered_data)
+            top_rides = defs.top_frequent_rides(filtered_data),
+            total_distance = defs.total_distance(filtered_data),
+        except Exception as e:
+            return str(e), 500
 
-        total_time, total_money, total_co2, total_calories = defs.total_time_money_co2_calories(filtered_data)
         return jsonify({
             "total_rides": len(filtered_data),
             "total_time": total_time,
             "total_money": total_money,
             "total_co2": total_co2,
             "total_calories": total_calories,
-            "top_rides": defs.top_frequent_rides(filtered_data),
-            "total_distance": defs.total_distance(filtered_data),
+            "top_rides": top_rides,
+            "total_distance": total_distance
         })
 
     return app

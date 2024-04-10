@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,24 +7,30 @@ import { Router } from '@angular/router';
   styleUrls: ['./season-selection.component.css']
 })
 export class SeasonSelectionComponent {
-  @Output() seasonChange = new EventEmitter<number>();
+  @Output() seasonChange = new EventEmitter<{name: string, startValue: number, endValue: number}>();
+
+
 
 
   constructor(private router: Router) {};
 
+  dates: Date[] | undefined;
 
-  seasons: {name: number, value: number}[] = []
+
+  seasons: {name: string, startValue: number, endValue: number}[] = []
   ngOnInit() {
     for(let name = new Date().getFullYear(); name >= 2022; name--) {
-      let value = new Date(`${name}/01/01 11:24:00`).getTime()
-    this.seasons.push({name, value});
+      let startValue = new Date(`${name}/01/01 00:00:01`).getTime()/1000;
+      let endValue = new Date(`${name}/12/31 23:59:59`).getTime()/1000;
+    this.seasons.push({name: `${name}`, startValue, endValue});
   }
 
 }
 
 
-  selectSeason(season: number) {
-    console.log('Selected season:', season);
+  selectSeason(season: {name: string, startValue: number, endValue: number}) {
+    console.log('Selected season:', season.startValue, season.endValue);
     this.seasonChange.emit(season);
   }
+
 }

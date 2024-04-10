@@ -44,14 +44,14 @@ def get_events(cookie):
     return response.json()
 
 
-def filter_by_season(data, time):
+def filter_by_season(data, start, end):
     filtered_data = []
     for rental in data['rentals']:
         if rental['startPlace']['name'] == rental['endPlace']['name']:
             continue
         start_time = rental['startTime']
         end_time = rental['endTime']
-        if start_time > time and end_time > time:
+        if start_time >= start and end_time <= end:
             filtered_data.append(rental)
     return filtered_data
 

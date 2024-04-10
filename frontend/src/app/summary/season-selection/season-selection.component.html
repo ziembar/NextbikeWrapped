@@ -6,7 +6,7 @@
     <div class="season" *ngFor="let season of seasons">
       <p-button
         class="season-button"
-        (click)="selectSeason(season.value)"
+        (click)="selectSeason(season)"
         ><span style="margin: auto;">
         {{ season.name }}
         </span>
@@ -15,23 +15,29 @@
     <div class="season">
       <p-calendar
         #calendar
+        [(ngModel)]="dates"
         [touchUI]="true"
         [showIcon]="true"
         [showButtonBar]="false"
-        selectionMode="range"
+        [hideOnDateTimeSelect]="false"
+        [selectionMode]="'range'"
         [showSeconds]="true"
         [showOnFocus]="false">
         <ng-template pTemplate="footer">
           <div class="calendar-footer">
             <p-button
               label="Anuluj"
-              class="calendar-button"
+              class="calendar-button1"
+              (onClick)="calendar.hideOverlay()"
             ></p-button>
             <p-button
               label="Zatwierdź"
-              class="calendar-button"
+              class="calendar-button2"
+              (onClick)="selectSeason({name: 'custom', startValue: this.dates[0].getTime()/1000, endValue: this.dates[1].getTime()/1000})"
             ></p-button>
           </div>
+
+
 
       </ng-template>
       </p-calendar>

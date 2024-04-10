@@ -14,7 +14,7 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/login`, {"phone": number, "pin": pin });
   }
 
-  getData(season: string, token: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/summary?season=${season}`, { token });
+  getData(start: number, end: number, cookie: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/summary`, {start, end, cookie });
   }
 }

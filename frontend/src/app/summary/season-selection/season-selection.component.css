@@ -28,6 +28,11 @@ body {
     font-weight: bold;
     margin-top: 10px;
     border-radius: 6px !important;
+    outline: 0 none !important;
+    outline-offset: 0 !important;
+    box-shadow: none !important;
+    border : 1px solid #5257b9 !important;
+    
 }
 
 
@@ -80,6 +85,24 @@ body {
     justify-content: center;
 }
 
+.calendar-button1 {
+    width: 100%;
+    padding-right: 3px;
+}
+.calendar-button2 {
+    width: 100%;
+    padding-left: 3px;
+}
+
+.calendar-footer {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 20px;
+
+}
+
 
 
 .baner {
@@ -101,8 +124,24 @@ body {
 }
 
 @layer primeng {
+    .p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
+      outline: 0 none !important;
+      outline-offset: 0 !important;
+      box-shadow: none !important;
+      border : 1px solid #5257b9 !important;
+    }
+  }
+
+  
+
+@layer primeng {
     .p-button {
     background: #666bc0 !important;
+    border-color: black !important;
+    outline: 0 none !important;
+      outline-offset: 0 !important;
+      box-shadow: none !important;
+      border : 1px solid #5257b9 !important;
 }
 .p-button :hover {
     background: #9899b5 !important;

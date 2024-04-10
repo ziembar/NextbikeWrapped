@@ -1,39 +1,51 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
-import { SeasonSelectionComponent } from './season-selection/season-selection.component';
-import { StatisticsComponent } from './statistics/statistics.component';
 
 
 @Component({
   selector: 'app-summary',
   templateUrl: 'summary.component.html',
+  styleUrls: ['summary.component.css']
 })
 export class SummaryComponent {
   
     constructor(private apiService: ApiService, private router: Router) {}
-    season = signal(null) // Retrieve selected season from localStorage or elsewhere
-    data: any = [];
+    data = signal(undefined);
+    season = signal({name: undefined, startValue: undefined, endValue: undefined});
+    loading = signal(false);
 
-    setSeason(season: number) {
-      console.log('Setting season:', season);
-      this.season.set(season);
-    }
 
-    getData(){
-      let token = '';
-      try{
-          token = localStorage.getItem('token');
-          if (token === null) throw 'Token not found';
-      }catch(e){
-          console.log(e);
-          this.router.navigate(['/login']);
-          return;
-      }
-      this.apiService.getData(this.season(), token).subscribe((response: any) => {
-        this.data = response.data;
-      }, error => {
-        console.error('Failed to fetch data:', error);
-      });
-    }
+
+  setSeason(season: {name: string, startValue: number, endValue: number}) {
+    this.season.set(season);
+    this.getData(season.startValue, season.endValue);
   }
+
+
+
+  getData(start: number, end: number){
+    this.loading.set(true);
+    let cookie = '';
+    try{
+        cookie = localStorage.getItem('cookie');
+        if (cookie === null) {
+          this.loading.set(false);
+          throw 'Token not found';
+        }
+    }catch(e){
+        console.log(e);
+        this.loading.set(false);
+        this.router.navigate(['/login']);
+        return;
+    }
+    this.apiService.getData(start, end, cookie).subscribe((response: any) => {
+      console.log('Data fetched:', response);
+      this.data.set(response);
+      this.loading.set(false);
+    }, error => {
+      console.error('Failed to fetch data:', error);
+      this.loading.set(false);
+    });
+  }
+}
