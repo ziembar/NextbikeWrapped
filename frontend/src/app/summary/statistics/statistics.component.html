@@ -1,1 +1,23 @@
-<span>{{data | json}}</span>
+<div class="main">
+    <span class="text-1">Tak właśnie jeździsz, {{name}}</span>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Podsumowanie {{data.total_rides}} przejazdów</h5>
+            <p class="card-text">Spalone kalorie: {{data.total_calories}}</p>
+            <p class="card-text">Zaoszczędzone CO2: {{data.total_co2}}</p>
+            <p class="card-text" pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google">Całkowity przejechany dystans: {{data.total_distance[0]/1000}} km <i class="pi pi-question-circle"></i></p>
+            <p class="card-text">Cena przejazdów: {{data.total_money}}</p>
+            <p class="card-text">Całkowity czas: {{data.total_time}} minut</p>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Top Rides</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" *ngFor="let ride of data.top_rides[0]">{{ride[0]}}: {{ride[1]}}</li>
+            </ul>
+        </div>
+    </div>
+</div>

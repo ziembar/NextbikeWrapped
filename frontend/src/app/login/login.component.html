@@ -16,8 +16,8 @@
 
         <div class="footer-wrapper">
             <div class="footer">
-                <p-button size="small" class="circle-link gh" [outlined]="true" icon="pi pi-github" [rounded]="true" severity="secondary"></p-button>
-                <p-button size="small" class="circle-link ig" [outlined]="true"  icon="pi pi-instagram" [rounded]="true" severity="warning"></p-button>
+                <a href="https://github.com/ziembar/NextbikeWrapped"><p-button size="small" class="circle-link gh" [outlined]="true" icon="pi pi-github" [rounded]="true" severity="secondary"></p-button></a>
+                <a href="https://www.instagram.com/bartekwbani/"><p-button size="small" class="circle-link ig" [outlined]="true"  icon="pi pi-instagram" [rounded]="true" severity="warning"></p-button></a>
                 <p-button size="small" class="circle-link fb" [outlined]="true" icon="pi pi-facebook" [rounded]="true" severity=""></p-button>
             </div>
         </div>
@@ -44,11 +44,13 @@
             </div>
             <i class="pi pi-spin pi-spinner" *ngIf="loading()"></i>
 
-            <div class="error" *ngIf="error()">
+            <div class="error" *ngIf="error() && !loading()">
             <span>{{error_message}}</span>
             
             </div>
         </form>
+
+        <div class="relog" *ngIf="authorized()"><span>{{name}}? <span class="link"><a (click)="this.router.navigate(['/summary']);">Kliknij aby przejść dalej</a></span></span></div>
 
         
     </div>

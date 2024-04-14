@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild, signal } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 })
 export class SeasonSelectionComponent {
   @Output() seasonChange = new EventEmitter<{name: string, startValue: number, endValue: number}>();
-
 
 
 

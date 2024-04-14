@@ -88,6 +88,20 @@ body {
     width: 70%;
 }
 
+.relog{
+    margin-top: auto;
+    margin-bottom: 30px;
+}
+
+.link{
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.link:hover{
+    text-decoration: underline;
+}
+
 .pfluid{
     display: flex;
     flex-direction: column;

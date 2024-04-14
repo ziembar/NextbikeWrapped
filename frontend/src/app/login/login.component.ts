@@ -12,14 +12,17 @@ import { Validators } from '@angular/forms';
 export class LoginComponent {
 
 
-  constructor(private apiService: ApiService, private router: Router, private formBuilder: FormBuilder) {}
+  constructor(private apiService: ApiService, public router: Router, private formBuilder: FormBuilder) {}
 
 
   error = signal(false)
   loading = signal(false)
+  authorized = signal(false)
 
   error_message = 'Wprowadzono niepoprawne dane. Spróbuj ponownie.'
 
+  cookie = localStorage.getItem('cookie');
+  name = localStorage.getItem('name');
 
   auth: FormGroup
 
@@ -28,7 +31,21 @@ export class LoginComponent {
       phone: [, [Validators.required, Validators.pattern(/^[0-9]{9}$/)]],
       pin: [, [Validators.required, Validators.minLength(5), Validators.maxLength(6)]]
     });
-  };
+
+
+
+    if(this.cookie) {
+      const cookieParts = this.cookie.split('*');
+      if(cookieParts.length === 8) {
+        const expiryTime = parseInt(cookieParts[5]);
+        const expiryDate = new Date(expiryTime);
+        const currentDate = new Date();
+        if(currentDate < expiryDate) {
+          this.authorized.set(true)
+        }
+      }
+  }
+}
 
 
 

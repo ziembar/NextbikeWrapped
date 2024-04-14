@@ -1,0 +1,14 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100vh;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px;
+}
+.text-1 {
+    font-size: 3rem;
+    padding-bottom: 60px;
+}

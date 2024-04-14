@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
@@ -13,6 +13,14 @@ import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PasswordModule } from 'primeng/password';
 import { CalendarModule } from 'primeng/calendar';
+import { ToastModule } from 'primeng/toast';
+import { CardModule } from 'primeng/card';
+import {ListboxModule} from 'primeng/listbox';
+import { TooltipModule } from 'primeng/tooltip';
+
+import { PrimeNGConfig } from 'primeng/api';
+
+
 
 
 import { SeasonSelectionComponent } from './summary/season-selection/season-selection.component';
@@ -43,12 +51,16 @@ declarations: [
     ButtonModule,
     InputNumberModule,
     PasswordModule,
-    CalendarModule
+    CalendarModule,
+    ToastModule,
+    CardModule,
+    ListboxModule,
+    TooltipModule,
 
 
   ],
   providers: [
-    ApiService
+    ApiService,
   ],
   bootstrap: [
     AppComponent
@@ -56,4 +68,11 @@ declarations: [
   exports: [RouterModule, SeasonSelectionComponent, StatisticsComponent]
 
 })
-export class AppModule { }
+export class AppModule implements OnInit{ 
+
+  constructor(private primengConfig: PrimeNGConfig) {}
+
+  ngOnInit() {
+      this.primengConfig.ripple = true;
+  }
+}
