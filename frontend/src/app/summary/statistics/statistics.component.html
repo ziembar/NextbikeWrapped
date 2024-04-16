@@ -1,23 +1,41 @@
-<div class="main">
+<div class="main" *ngIf="!data.no_data">
     <span class="text-1">Tak właśnie jeździsz, {{name}}</span>
 
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Podsumowanie {{data.total_rides}} przejazdów</h5>
-            <p class="card-text">Spalone kalorie: {{data.total_calories}}</p>
-            <p class="card-text">Zaoszczędzone CO2: {{data.total_co2}}</p>
-            <p class="card-text" pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google">Całkowity przejechany dystans: {{data.total_distance[0]/1000}} km <i class="pi pi-question-circle"></i></p>
-            <p class="card-text">Cena przejazdów: {{data.total_money}}</p>
-            <p class="card-text">Całkowity czas: {{data.total_time}} minut</p>
+    <div class="">
+        <h3 *ngIf="season.name !== 'custom'">Podsumowanie sezonu <span style="font-weight: bold;">{{season.name}}</span></h3>
+        <h3 *ngIf="season.name === 'custom'">Podsumowanie od {{ formatDate(season.startValue) }} do {{ formatDate(season.endValue) }}</h3>
+        <div class="">
+            <p class="">W tym czasie <span style="font-weight: bold;">{{data.total_rides}}</span> razy wypożyczyłeś rower</p>
+            <p class="">Spalone kalorie: <span style="font-weight: bold;">{{data.total_calories}}</span></p>
+            <p class="">Zaoszczędzone CO2: <span style="font-weight: bold;">{{data.total_co2}}</span></p>
+            <p class="" pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google">Całkowity przejechany dystans: <span style="font-weight: bold;">{{data.total_distance/1000}} km</span> <i class="pi pi-question-circle"></i></p>
+            <p class="">Cena przejazdów: <span style="font-weight: bold;">{{data.total_money}} zł</span></p>
+            <p class="">Całkowity czas: <span style="font-weight: bold;">{{data.total_time}} minut</span></p>
         </div>
     </div>
 
-    <div class="card mt-4">
-        <div class="card-body">
-            <h5 class="card-title">Top Rides</h5>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item" *ngFor="let ride of data.top_rides[0]">{{ride[0]}}: {{ride[1]}}</li>
-            </ul>
+    <h5 class="">Najczęstsze trasy</h5>
+
+    <div class="topdiv">
+        <div class="top" *ngFor="let ride of data.top_rides">
+
+                <div class="list-group-item" >{{ride[0]}} - {{ride[1]}}</div>
+                <div class="list-group-item" >{{ride[2]}} razy</div>
+
         </div>
+    </div>
+    <div class="p-fluid" style="border-radius: 6px;">
+        <p-image [src]="data.map" alt="Mapa przejazdów" class="image" width="400" [preview]="true"></p-image>
+    </div>
+
+</div>
+<div class="center-div"  *ngIf="data.no_data">
+    <div class="no-data">
+
+        <span class="text-1">Nie jeździłeś w tym sezonie...</span>
+        <span *ngIf="season.name!='custom'" class="text-2">Wsiadaj na rower albo wybierz inny sezon.</span>
+        <span *ngIf="season.name==='custom'" class="text-2">Wsiadaj na rower albo wybierz inny przedział czasu.</span>
+    
+    
     </div>
 </div>

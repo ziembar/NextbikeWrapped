@@ -1,7 +1,9 @@
+import time
 from flask import Flask, request, jsonify
 import os
 from decouple import config
 from datetime import datetime
+from google_requests import static_map_request
 import defs
 from flask_cors import CORS
 
@@ -59,20 +61,28 @@ def create_app():
         
         try:
             filtered_data = defs.filter_by_season(events, start, end)
+            if(len(filtered_data) == 0):
+                return jsonify({"no_data": True}), 200
             total_time, total_money, total_co2, total_calories = defs.total_time_money_co2_calories(filtered_data)
-            top_rides = defs.top_frequent_rides(filtered_data),
-            total_distance = defs.total_distance(filtered_data),
+            total_rides = len(filtered_data)
+            g_data = defs.group_rentals(filtered_data)
+
+            top_rides = defs.top_frequent_rides(g_data)
+            total_distance = defs.total_distance(g_data)
+            b64map = static_map_request(g_data)
         except Exception as e:
             return str(e), 500
 
         return jsonify({
-            "total_rides": len(filtered_data),
+            "total_rides": total_rides,
             "total_time": total_time,
             "total_money": total_money,
             "total_co2": total_co2,
             "total_calories": total_calories,
             "top_rides": top_rides,
-            "total_distance": total_distance
+            "total_distance": total_distance,
+            "map": b64map,
+            "no_data": False
         })
 
     return app

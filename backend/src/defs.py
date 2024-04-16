@@ -1,11 +1,10 @@
 import time
 from decouple import config
 import db_actions
-import datetime
 from Models import getDriver
 import requests
 import json
-import googlemaps
+from google_requests import distance_matrix_request
 
 
 
@@ -69,20 +68,17 @@ def get_all_stations(): #TODO expand project to include other cities
     return response.json()['countries'][0]['cities'][0]['places']
 
 
-def top_frequent_rides(data):
-    rides = {}
-    for rental in data:
+def top_frequent_rides(g_data):
+    sorted_rides = sorted(g_data, key=lambda x: x['amount'], reverse=True)
+    top_rides = sorted_rides[:3]
+
+    new_top_rides = []
+    for rental in top_rides:
         if rental['startPlace']['name'] and rental['endPlace']['name']:
             start_name = rental['startPlace']['name']
             end_name = rental['endPlace']['name']
-            ride = f"{min(start_name, end_name)} <---> {max(start_name, end_name)}"
-            if ride in rides:
-                rides[ride] += 1
-            else:
-                rides[ride] = 1
-    sorted_rides = sorted(rides.items(), key=lambda x: x[1], reverse=True)
-    top_rides = sorted_rides[:3]
-    return top_rides
+            new_top_rides.append([min(start_name, end_name), max(start_name, end_name), rental['amount']])
+    return new_top_rides
 
 
 def total_time_money_co2_calories(data):
@@ -130,7 +126,7 @@ def group_rentals(data):
         end_station = rental['endPlace']['name']
         found = False
         for existing_rental in grouped_rentals:
-            if (existing_rental['startPlace']['name'] == start_station and existing_rental['endPlace']['name'] == end_station):
+            if ((existing_rental['startPlace']['name'] == start_station and existing_rental['endPlace']['name'] == end_station) or (existing_rental['startPlace']['name'] == end_station and existing_rental['endPlace']['name'] == start_station)):
                 existing_rental['amount'] += 1
                 found = True
                 break
@@ -148,17 +144,18 @@ def total_distance(data):
     for rental in data:
         start_station = rental['startPlace']['name']
         end_station = rental['endPlace']['name']
+        amount = rental['amount']
 
         if(start_station == None or end_station == None):
             continue
         if start_station in stations:
-            stations[start_station] += 1
+            stations[start_station] += amount
         else:
-            stations[start_station] = 1
+            stations[start_station] = amount
         if end_station in stations:
-            stations[end_station] += 1
+            stations[end_station] += amount
         else:
-            stations[end_station] = 1
+            stations[end_station] = amount
     sorted_stations = sorted(stations.items(), key=lambda x: x[1], reverse=True)
 
     for station in sorted_stations:
@@ -168,11 +165,11 @@ def total_distance(data):
         filtered_data = filter_by_station(data, station[0])
         if(len(filtered_data) == 0):
             continue
-        grouped_rentals =  group_rentals(filtered_data)
 
-        db_result = db_actions.find_station_by_coordinates(getDriver(), grouped_rentals[0]['startPlace']['lat'], grouped_rentals[0]['startPlace']['lng'])
+        db_result = db_actions.find_station_by_coordinates(getDriver(), filtered_data[0]['startPlace']['lat'], filtered_data[0]['startPlace']['lng'])
 
-        for grouped_rent in grouped_rentals.copy():
+        filtered_data_copy = filtered_data.copy()
+        for grouped_rent in filtered_data_copy:
             for record in db_result:
 
                 # print("pulled from db: ", record['s'].get('name'),"<--->" , record['d'].get('name'))
@@ -180,36 +177,16 @@ def total_distance(data):
                 if record['d'].get('name') == grouped_rent['endPlace']['name']:
                     # print("its a match!")
                     total_distance += record['r'].get('distance') * grouped_rent['amount']
-                    grouped_rentals.remove(grouped_rent)
+                    filtered_data.remove(grouped_rent)
                     break
-        if(len(grouped_rentals) != 0):
-            total_distance += distance_matrix_request(grouped_rentals)
+        if(len(filtered_data) != 0):
+            total_distance += distance_matrix_request(filtered_data)
         
         # send request to google, add to db, add to sum
-        data = [rec for rec in data if rec not in filtered_data]
+        data = [rec for rec in data if rec not in filtered_data_copy]
 
     for rental in data:
-        total_distance +=distance_matrix_request(rental)
+        total_distance +=distance_matrix_request([rental])
     return total_distance
 
 
-def distance_matrix_request(rentals):
-    origin = {"lat": rentals[0]['startPlace']['lat'], "lng": rentals[0]['startPlace']['lng']}
-    destinations = []
-    for rent in rentals:
-        destinations.append({"lat": rent['endPlace']['lat'], "lng": rent['endPlace']['lng']})
-
-    
-    gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
-    result = gmaps.distance_matrix(origin, destinations, mode='bicycling')
-
-    print("1 request, destinations - ", len(destinations))
-    total_distance = 0
-
-    for dest, res in zip(rentals, result['rows'][0]['elements']):
-        amount = dest.get('amount', 1)
-        if 'amount' in dest:
-            db_actions.add_distance_relation(getDriver(), origin['lat'], origin['lng'], dest['endPlace']['lat'], \
-                                dest['endPlace']['lng'], res['distance']['value'], res['duration']['value'])
-        total_distance += res['distance']['value'] * amount
-    return total_distance

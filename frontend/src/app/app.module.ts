@@ -14,9 +14,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { PasswordModule } from 'primeng/password';
 import { CalendarModule } from 'primeng/calendar';
 import { ToastModule } from 'primeng/toast';
-import { CardModule } from 'primeng/card';
-import {ListboxModule} from 'primeng/listbox';
 import { TooltipModule } from 'primeng/tooltip';
+import { ImageModule } from 'primeng/image';
+
 
 import { PrimeNGConfig } from 'primeng/api';
 
@@ -53,9 +53,8 @@ declarations: [
     PasswordModule,
     CalendarModule,
     ToastModule,
-    CardModule,
-    ListboxModule,
     TooltipModule,
+    ImageModule,
 
 
   ],
