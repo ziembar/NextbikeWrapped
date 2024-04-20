@@ -85,4 +85,5 @@ def create_app():
             "no_data": False
         })
 
+    # TODO: add logs to error handling
     return app

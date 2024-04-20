@@ -139,6 +139,7 @@ def group_rentals(data):
 
 
 def total_distance(data):
+    # TODO: fix two-way distance calculation, add longest ride
     total_distance = 0
     stations = {}
     for rental in data:
