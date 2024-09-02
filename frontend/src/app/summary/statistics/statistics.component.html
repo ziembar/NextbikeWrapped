@@ -6,11 +6,12 @@
         <h3 *ngIf="season.name === 'custom'">Podsumowanie od {{ formatDate(season.startValue) }} do {{ formatDate(season.endValue) }}</h3>
         <div class="">
             <p class="">W tym czasie <span style="font-weight: bold;">{{data.total_rides}}</span> razy wypożyczyłeś rower</p>
-            <p class="">Spalone kalorie: <span style="font-weight: bold;">{{data.total_calories}}</span></p>
-            <p class="">Zaoszczędzone CO2: <span style="font-weight: bold;">{{data.total_co2}}</span></p>
             <p class="" pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google">Całkowity przejechany dystans: <span style="font-weight: bold;">{{data.total_distance/1000}} km</span> <i class="pi pi-question-circle"></i></p>
-            <p class="">Cena przejazdów: <span style="font-weight: bold;">{{data.total_money}} zł</span></p>
+            <p class="">W tym tyle zarobiłeś: <span style="font-weight: bold;">{{data.total_gain}} zł</span></p>
+            <p class="">A tyle wydałeś: <span style="font-weight: bold;">{{data.total_cost}} zł</span></p>
+            
             <p class="">Całkowity czas: <span style="font-weight: bold;">{{data.total_time}} minut</span></p>
+            <p class="">W najdłuższą podróż wybrałeś się z <span style="font-weight: bold;">{{data.longest_ride.start_place}}</span> do <span style="font-weight: bold;">{{data.longest_ride.end_place}}</span> i przejechałeś conajmniej <span style="font-weight: bold;">{{data.longest_ride.distance}} m!</span></p>
         </div>
     </div>
 

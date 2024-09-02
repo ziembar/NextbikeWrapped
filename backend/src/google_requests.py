@@ -7,13 +7,15 @@ import requests
 import base64
 
 
-def distance_matrix_request(rentals):
-    origin = {"lat": rentals[0]['startPlace']['lat'], "lng": rentals[0]['startPlace']['lng']}
+def distance_matrix_request(rentals, longest_ride):
+    origin_full = rentals[0]
+    origin = {"lat": rentals[0]['start_place_lat'], "lng": rentals[0]['start_place_lng']}
     destinations = []
     for rent in rentals:
-        destinations.append({"lat": rent['endPlace']['lat'], "lng": rent['endPlace']['lng']})
+        destinations.append({"lat": rent['end_place_lat'], "lng": rent['end_place_lng']})
 
     
+
     gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
     result = gmaps.distance_matrix(origin, destinations, mode='bicycling')
 
@@ -21,11 +23,16 @@ def distance_matrix_request(rentals):
     total_distance = 0
 
     for dest, res in zip(rentals, result['rows'][0]['elements']):
-        amount = dest.get('amount', 1)
-        if 'amount' in dest:
-            db_actions.add_distance_relation(getDriver(), origin['lat'], origin['lng'], dest['endPlace']['lat'], \
-                                dest['endPlace']['lng'], res['distance']['value'], res['duration']['value'])
+        amount = dest.get('amount')
+        if dest['start_place_type'] == 0 and dest['end_place_type'] == 0:
+            db_actions.add_distance_relation(getDriver(), origin_full['start_place'], dest['end_place'],\
+                res['distance']['value'], res['duration']['value'])
+
         total_distance += res['distance']['value'] * amount
+
+        if longest_ride['distance'] < res['distance']['value']:
+            longest_ride['distance'] = res['distance']['value']
+            longest_ride['rent'] = dest
     return total_distance
 
 
@@ -46,7 +53,7 @@ def static_map_request(g_rentals):
 
     paths = []
     for route in g_rentals:
-        place = f"{route['startPlace']['lat']},{route['startPlace']['lng']}|{route['endPlace']['lat']},{route['endPlace']['lng']}"
+        place = f"{route['start_place_lat']},{route['start_place_lng']}|{route['end_place_lat']},{route['end_place_lng']}"
         times_traveled = route['amount']
 
         # Create path style
@@ -98,10 +105,10 @@ def __find_bounds(rentals):
     max_lng = float('-inf')
     
     for rent in rentals:
-        start_lat = rent['startPlace']['lat']
-        start_lng = rent['startPlace']['lng']
-        end_lat = rent['endPlace']['lat']
-        end_lng = rent['endPlace']['lng']
+        start_lat = rent['start_place_lat']
+        start_lng = rent['start_place_lng']
+        end_lat = rent['end_place_lat']
+        end_lng = rent['end_place_lng']
         
         min_lat = min(min_lat, start_lat, end_lat)
         max_lat = max(max_lat, start_lat, end_lat)

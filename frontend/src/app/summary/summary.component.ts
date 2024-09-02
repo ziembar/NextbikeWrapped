@@ -20,51 +20,18 @@ export class SummaryComponent {
 
     ngOnInit() {
       const cookie = localStorage.getItem('cookie');
-      if(cookie) {
-        const cookieParts = cookie.split('*');
-        if(cookieParts.length === 8) {
-          const expiryTime = parseInt(cookieParts[5]);
-          const expiryDate = new Date(expiryTime);
-          const currentDate = new Date();
-          if(currentDate > expiryDate) {
-            this.router.navigate(['/login']);
+      const exp = localStorage.getItem('exp');
+
+        if(exp && cookie) {
+          console.log(Date.now(), parseInt(exp));
+          if(Date.now()/1000 > parseInt(exp)) {
+              this.router.navigate(['/login']);
           }
-        } else {
+        }
+        else {
           this.router.navigate(['/login']);
         }
-      } else {
-        this.router.navigate(['/login']);
       }
-      // this.data.set({
-      //   "top_rides": [
-      //     [
-      //       [
-      //         "Plac Politechniki <---> al. Jana Pawła II - Plac Mirowski",
-      //         7
-      //       ],
-      //       [
-      //         "Plac Konstytucji <---> Plac Politechniki",
-      //         1
-      //       ],
-      //       [
-      //         "Plac Konstytucji <---> Rondo Jazdy Polskiej",
-      //         1
-      //       ]
-      //     ]
-      //   ],
-      //   "total_calories": 532,
-      //   "total_co2": 264,
-      //   "total_distance": [
-      //     27125
-      //   ],
-      //   "total_money": 0,
-      //   "total_rides": 12,
-      //   "total_time": 107.6
-      // })
-    }
-
-
-
 
   setSeason(season: {name: string, startValue: number, endValue: number}) {
     this.season.set(season);

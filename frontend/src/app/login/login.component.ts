@@ -23,6 +23,8 @@ export class LoginComponent {
 
   cookie = localStorage.getItem('cookie');
   name = localStorage.getItem('name');
+  exp = localStorage.getItem('exp');
+
 
   auth: FormGroup
 
@@ -34,15 +36,9 @@ export class LoginComponent {
 
 
 
-    if(this.cookie) {
-      const cookieParts = this.cookie.split('*');
-      if(cookieParts.length === 8) {
-        const expiryTime = parseInt(cookieParts[5]);
-        const expiryDate = new Date(expiryTime);
-        const currentDate = new Date();
-        if(currentDate < expiryDate) {
+    if(this.exp && this.cookie) {
+      if(Date.now() < parseInt(this.exp)) {
           this.authorized.set(true)
-        }
       }
   }
 }
@@ -57,7 +53,7 @@ export class LoginComponent {
     const pin = this.auth.get('pin').value
     this.apiService.login(phone, pin).subscribe((response: any) => {
       if(response.code !== 200) {
-        this.error_message = response.message ?? 'Wprowadzono niepoprawne dane. Spróbuj ponownie.'
+        this.error_message = response.statusText ?? 'Wprowadzono niepoprawne dane. Spróbuj ponownie.'
         this.error.set(true)
         this.loading.set(false)
         return;
@@ -65,6 +61,7 @@ export class LoginComponent {
       this.loading.set(false)
       localStorage.setItem('cookie', response.cookie);
       localStorage.setItem('name', response.name);
+      localStorage.setItem('exp', response.exp);
       this.router.navigate(['/summary']);
     }, error => {
       this.loading.set(false)

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://89.174.254.18:5000/api';
+  private apiUrl = 'http://127.0.0.1:5000/api';
 
   constructor(private http: HttpClient) {}
 

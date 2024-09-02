@@ -5,51 +5,59 @@ from Models import getDriver
 import requests
 import json
 from google_requests import distance_matrix_request
+import jwt
 
 
+def get_api_key():
+    req = requests.get("https://webview.nextbike.net/getAPIKey.json", headers={ "user-agent": "nextbike-av4"})
+    if req.ok:
+        return req.json()['apiKey']
 
-def get_cookie(phone, pin):
-        url = "https://account.nextbike.pl/api/login"
-        headers = {
-            "Accept": "application/json, text/plain, */*",
-            "Content-Type": "application/json",
-            "Origin": "https://account.nextbike.pl",
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-Fetch-Mode": "cors",
-            "Referer": "https://account.nextbike.pl/pl-PL/vw",
-            "Accept-Language": "en-US,en;q=0.9",
-        }
-        data = {
-            "mobile": phone,
-            "pin": pin,
-            "city": "vw",
-        }
+def get_login_key(phone, pin):
+    api_key = get_api_key()
+    url = "https://api.nextbike.net/api/login.json"
 
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        response.raise_for_status()
-
-        name = response.json().get("screen_name").split()[0].capitalize()
-
-        return response.headers['set-cookie'], name
-
-
-def get_events(cookie):
-    url = "https://account.nextbike.pl/api/events"
-    cookies = {
-        "Cookie": cookie,
+    data = {
+        "mobile": phone,
+        "pin": pin,
+        "api_key": api_key,
+        'show_errors': 1
     }
-    response = requests.get(url, headers=cookies, cookies=cookies)
+
+    response = requests.post(url, data=data)
+
+    if 'error' in response.json():
+        raise Exception(f"Login failed with code {response.json()['error']['code']}. Message: {response.json()['error']['message']}")
+
+    token = response.json()['user']['appform_auth_token']
+    decoded_token = jwt.decode(token, options={"verify_signature": False})
+    exp = decoded_token.get("exp")
+    return response.json()['user']['loginkey'], response.json()['user']['screen_name'], exp
+
+def get_events(loginkey):
+    api_key = get_api_key()
+    url = f"https://api.nextbike.net/api/v1.1/list.json?api_key={api_key}&loginkey={loginkey}&limit=none"
+    print(url)
+    api_key = requests.get("https://webview.nextbike.net/getAPIKey.json").json()['apiKey']
+
+    headers = {
+        'Accept-Encoding': 'gzip',
+        'Connection': 'Keep-Alive',
+        'User-Agent': 'user-agent": "nextbike-av4'
+    }
+
+    response = requests.get(url, headers=headers)
 
     return response.json()
 
 
 def filter_by_season(data, start, end):
     filtered_data = []
-    for rental in data['rentals']:
-        if rental['startPlace']['name'] == rental['endPlace']['name']:
+    for rental in data['account']['items']:
+        if rental['node'] != "rental":
             continue
-        start_time = rental['startTime']
-        end_time = rental['endTime']
+        start_time = rental['start_time']
+        end_time = rental['end_time']
         if start_time >= start and end_time <= end:
             filtered_data.append(rental)
     return filtered_data
@@ -57,15 +65,26 @@ def filter_by_season(data, start, end):
 
 def filter_last_week(data):
     filtered_data = []
-    for rental in data['rentals']:
-        start_time = rental['startTime']
+    for rental in data['account']['items']:
+        start_time = rental['start_time']
         if start_time >= time.time() - 60*60*24*7:
             filtered_data.append(rental)
     return filtered_data
 
-def get_all_stations(): #TODO expand project to include other cities
-    response = requests.get("https://api.nextbike.net/maps/nextbike-live.json?city=812")
-    return response.json()['countries'][0]['cities'][0]['places']
+def get_all_stations():
+    response = requests.get("https://api.nextbike.net/maps/nextbike-live.json")
+    return response.json()
+
+
+
+def filter_same_station(data):
+    filtered_data = []
+    for rental in data:
+        start_station = rental['start_place']
+        end_station = rental['end_place']
+        if start_station != end_station:
+            filtered_data.append(rental)
+    return filtered_data
 
 
 def top_frequent_rides(g_data):
@@ -74,47 +93,30 @@ def top_frequent_rides(g_data):
 
     new_top_rides = []
     for rental in top_rides:
-        if rental['startPlace']['name'] and rental['endPlace']['name']:
-            start_name = rental['startPlace']['name']
-            end_name = rental['endPlace']['name']
+        if rental['start_place_name'] and rental['end_place_name']:
+            start_name = rental['start_place_name']
+            end_name = rental['end_place_name']
             new_top_rides.append([min(start_name, end_name), max(start_name, end_name), rental['amount']])
     return new_top_rides
 
 
-def total_time_money_co2_calories(data):
+def total_time_cost_gain(data):
     total_time = 0
     total_cost = 0
-    total_co2 = 0
-    total_calories = 0
+    total_gain = 0
 
     for rental in data:
-        duration = rental['endTime'] - rental['startTime']
+        duration = rental['end_time'] - rental['start_time']
         total_time += duration
-
         total_cost += rental['price']
-
-        total_co2 += rental['co2']
-
-        total_calories += rental['calories']
-
-    return round(total_time/60,1), total_cost/100, total_co2, total_calories
+        if rental['price_service'] < 0:
+            total_gain -= rental['price_service']
+        else:
+            total_cost += rental['price_service']
 
 
 
-
-
-def filter_by_station(data, station):
-    filtered_data = []
-    for rental in data:
-        start_station = rental['startPlace']['name']
-        end_station = rental['endPlace']['name']
-        if (start_station == station or end_station == station) and (not start_station == None and not end_station == None):
-            if end_station == station:
-                start_station = rental['endPlace']
-                rental['endPlace'] = rental['startPlace']
-                rental['startPlace'] = start_station
-            filtered_data.append(rental)
-    return filtered_data
+    return round(total_time/60,1), round(total_cost/100, 2), round(total_gain/100, 2)
 
 
 
@@ -122,11 +124,11 @@ def filter_by_station(data, station):
 def group_rentals(data):
     grouped_rentals = []
     for rental in data:
-        start_station = rental['startPlace']['name']
-        end_station = rental['endPlace']['name']
+        start_station = rental['start_place']
+        end_station = rental['end_place']
         found = False
         for existing_rental in grouped_rentals:
-            if ((existing_rental['startPlace']['name'] == start_station and existing_rental['endPlace']['name'] == end_station) or (existing_rental['startPlace']['name'] == end_station and existing_rental['endPlace']['name'] == start_station)):
+            if ((existing_rental['start_place'] == start_station and existing_rental['end_place'] == end_station) or (existing_rental['start_place'] == end_station and existing_rental['end_place'] == start_station)):
                 existing_rental['amount'] += 1
                 found = True
                 break
@@ -138,17 +140,30 @@ def group_rentals(data):
 
 
 
+
+def filter_by_station(data, station):
+    filtered_data = []
+    for rental in data:
+        if (rental['start_place'] == station or rental['end_place'] == station):
+            if rental['end_place'] == station:
+                rental['start_place'], rental['end_place'] = rental['end_place'], rental['start_place']
+                rental['start_place_lat'], rental['end_place_lat'] = rental['end_place_lat'], rental['start_place_lat']
+                rental['start_place_lng'], rental['end_place_lng'] = rental['end_place_lng'], rental['start_place_lng']
+                rental['start_place_name'], rental['end_place_name'] = rental['end_place_name'], rental['start_place_name']
+                rental['start_place_type'], rental['end_place_type'] = rental['end_place_type'], rental['start_place_type']
+            filtered_data.append(rental)
+    return filtered_data
+
 def total_distance(data):
     # TODO: fix two-way distance calculation, add longest ride
     total_distance = 0
+    longest_ride = {"distance": 0, "rent": None}
     stations = {}
     for rental in data:
-        start_station = rental['startPlace']['name']
-        end_station = rental['endPlace']['name']
+        start_station = rental['start_place']
+        end_station = rental['end_place']
         amount = rental['amount']
 
-        if(start_station == None or end_station == None):
-            continue
         if start_station in stations:
             stations[start_station] += amount
         else:
@@ -167,27 +182,37 @@ def total_distance(data):
         if(len(filtered_data) == 0):
             continue
 
-        db_result = db_actions.find_station_by_coordinates(getDriver(), filtered_data[0]['startPlace']['lat'], filtered_data[0]['startPlace']['lng'])
+        db_result = db_actions.find_station_by_uid(getDriver(), station[0])
 
         filtered_data_copy = filtered_data.copy()
         for grouped_rent in filtered_data_copy:
             for record in db_result:
 
                 # print("pulled from db: ", record['s'].get('name'),"<--->" , record['d'].get('name'))
-                # print("comparing ['d'] with: ", grouped_rent['endPlace']['name'])
-                if record['d'].get('name') == grouped_rent['endPlace']['name']:
+                # print("comparing ['d'] with: ", grouped_rent['end_place_name'])
+                if record['d'].get('uid') == grouped_rent['end_place']:
                     # print("its a match!")
                     total_distance += record['r'].get('distance') * grouped_rent['amount']
+
+                    if longest_ride['distance'] < record['r'].get('distance'):
+                        longest_ride['distance'] = record['r'].get('distance')
+                        longest_ride['rent'] = grouped_rent
                     filtered_data.remove(grouped_rent)
                     break
         if(len(filtered_data) != 0):
-            total_distance += distance_matrix_request(filtered_data)
+            # Divide the command into multiple calls with a maximum of 25 elements in the filtered_data array
+            chunk_size = 25
+            num_chunks = len(filtered_data) // chunk_size + 1
+
+            for i in range(num_chunks):
+                start_index = i * chunk_size
+                end_index = min((i + 1) * chunk_size, len(filtered_data))
+                chunk = filtered_data[start_index:end_index]
+                total_distance += distance_matrix_request(chunk, longest_ride)
         
         # send request to google, add to db, add to sum
         data = [rec for rec in data if rec not in filtered_data_copy]
 
     for rental in data:
-        total_distance +=distance_matrix_request([rental])
-    return total_distance
-
-
+        total_distance +=distance_matrix_request([rental], longest_ride)
+    return total_distance, {"start_place": longest_ride['rent']['start_place_name'], "end_place": longest_ride['rent']['end_place_name'], "distance": longest_ride['distance']}

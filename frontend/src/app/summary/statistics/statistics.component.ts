@@ -4,13 +4,14 @@ import { Loader } from '@googlemaps/js-api-loader';
 import moment from 'moment';
 
 interface Data {
-  total_calories: number;
-  total_co2: number;
+  total_gain: number;
+  total_cost: number
   total_distance: number;
   total_money: number;
   total_rides: number;
   total_time: number;
   top_rides: string[][];
+  longest_ride: {start_place: string, end_place: string, distance: number};
   map: string;
   no_data: boolean;
 }
