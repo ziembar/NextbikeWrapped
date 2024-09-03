@@ -14,5 +14,19 @@
             "src": "/(.*)",
             "dest": "src/app.py"
         }
-    ]
+    ],
+        "functions": {
+        "src/google_requests.py": {
+            "memory": 3009,
+            "maxDuration": 60
+        },
+        "src/defs.js": {
+            "memory": 3009,
+            "maxDuration": 60
+        },
+        "src/db_actions.js": {
+            "memory": 3009,
+            "maxDuration": 60
+        }
+  }
 }
