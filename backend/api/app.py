@@ -5,12 +5,16 @@ from decouple import config
 from datetime import datetime
 from defs import *
 from flask_cors import CORS
+import sys
 
 
 
 
 app = Flask(__name__)
 # cors = CORS(app, resources={r"/api/*": {"origins": [config('FRONTEND_URL')]}})
+
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
    
 
 @app.route('/')

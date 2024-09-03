@@ -1,7 +1,7 @@
 import googlemaps
 from decouple import config
 from Models import getDriver
-import db_actions
+from db_actions import *
 import math
 import requests
 import base64
@@ -25,7 +25,7 @@ def distance_matrix_request(rentals, longest_ride):
     for dest, res in zip(rentals, result['rows'][0]['elements']):
         amount = dest.get('amount')
         if dest['start_place_type'] == 0 and dest['end_place_type'] == 0:
-            db_actions.add_distance_relation(getDriver(), origin_full['start_place'], dest['end_place'],\
+            add_distance_relation(getDriver(), origin_full['start_place'], dest['end_place'],\
                 res['distance']['value'], res['duration']['value'])
 
         total_distance += res['distance']['value'] * amount

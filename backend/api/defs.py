@@ -1,6 +1,6 @@
 import time
 from decouple import config
-import db_actions
+from db_actions import *
 from Models import getDriver
 import requests
 import json
@@ -184,7 +184,7 @@ def total_distance(data):
         if(len(filtered_data) == 0):
             continue
 
-        db_result = db_actions.find_station_by_uid(getDriver(), station[0])
+        db_result = find_station_by_uid(getDriver(), station[0])
 
         filtered_data_copy = filtered_data.copy()
         for grouped_rent in filtered_data_copy:
