@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify
 import os
 from decouple import config
 from datetime import datetime
-from google_requests import static_map_request
 import defs
 from flask_cors import CORS
 
