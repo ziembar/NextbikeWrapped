@@ -1,8 +1,0 @@
-{
-    "functions": {
-      "src/app.py": {
-        "includeFiles": "api/**"
-      }
-    },
-    "routes": [{ "src": "/", "dest": "src/app.py" }]
-  }
