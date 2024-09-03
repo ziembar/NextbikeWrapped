@@ -62,6 +62,7 @@ export class StatisticsComponent{
   formatDate(date: number) {
     return moment.unix(date).format('DD.MM.YYYY');
   }
+
   
 
 }

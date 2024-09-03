@@ -41,17 +41,19 @@ def create_app():
     def get_data():
         
         try:
-            start = int(request.json['start'])
-            end = int(request.json['end'])
             cookie = str(request.json['cookie'])
 
         except:
             return "Invalid request", 400
 
         current_time = int(datetime.now().timestamp())
+        try:
+            start = int(request.json['start'])
+            end = int(request.json['end'])
+        except:
+            start = 0
+            end = current_time
 
-        if start is None or start > current_time or end is None or end < start :
-            return "Provide a valid time range!", 400
 
         try:
             events = defs.get_events(cookie)
@@ -61,6 +63,7 @@ def create_app():
             return str(e), 500
         
         try:
+
             filtered_data = defs.filter_by_season(events, start, end)
             if(len(filtered_data) == 0):
                 return jsonify({"no_data": True}), 200

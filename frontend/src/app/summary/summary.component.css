@@ -6,3 +6,19 @@
     width: 100%;
     
 }
+
+.vertical-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.bottom-button{
+    position: absolute;
+    bottom: 12px;
+    right: 50%;
+    left: 50%;
+}

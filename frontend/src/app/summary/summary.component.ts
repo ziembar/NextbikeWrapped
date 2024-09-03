@@ -31,16 +31,22 @@ export class SummaryComponent {
         else {
           this.router.navigate(['/login']);
         }
+        this.setSeason({name: Date.now().toLocaleString(), startValue: null, endValue: null});
       }
 
-  setSeason(season: {name: string, startValue: number, endValue: number}) {
+  setSeason(season: {name: string, startValue: any, endValue: any}) {
     this.season.set(season);
     this.getData(season.startValue, season.endValue);
   }
 
 
+  back() {
+    this.data.set(undefined);
+    this.loading.set(false);
+  }
 
-  getData(start: number, end: number){
+
+  getData(start: any, end: any){
     this.loading.set(true);
     let cookie = '';
     try{

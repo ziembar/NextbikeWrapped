@@ -25,6 +25,7 @@ def get_login_key(phone, pin):
     }
 
     response = requests.post(url, data=data)
+    print(response.json())
 
     if 'error' in response.json():
         raise Exception(f"Login failed with code {response.json()['error']['code']}. Message: {response.json()['error']['message']}")
@@ -151,6 +152,7 @@ def filter_by_station(data, station):
                 rental['start_place_lng'], rental['end_place_lng'] = rental['end_place_lng'], rental['start_place_lng']
                 rental['start_place_name'], rental['end_place_name'] = rental['end_place_name'], rental['start_place_name']
                 rental['start_place_type'], rental['end_place_type'] = rental['end_place_type'], rental['start_place_type']
+                rental['reversed'] = True
             filtered_data.append(rental)
     return filtered_data
 
@@ -215,4 +217,9 @@ def total_distance(data):
 
     for rental in data:
         total_distance +=distance_matrix_request([rental], longest_ride)
-    return total_distance, {"start_place": longest_ride['rent']['start_place_name'], "end_place": longest_ride['rent']['end_place_name'], "distance": longest_ride['distance']}
+
+    if longest_ride.get('reversed'):
+        top_ride = {"start_place": longest_ride['rent']['end_place_name'], "end_place": longest_ride['rent']['start_place_name'], "distance": longest_ride['distance']}
+    else:
+        longest_ride = {"start_place": longest_ride['rent']['start_place_name'], "end_place": longest_ride['rent']['end_place_name'], "distance": longest_ride['distance']}
+    return total_distance, longest_ride
