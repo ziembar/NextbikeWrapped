@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 import os
 from decouple import config
 from datetime import datetime
-from .api.defs import *
+from defs import *
 from flask_cors import CORS
 
 
@@ -92,4 +92,5 @@ def create_app():
         })
 
     # TODO: add logs to error handling
-    return app
+    if __name__ == "__main__":
+        app.run()
