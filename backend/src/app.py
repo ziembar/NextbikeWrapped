@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    cors = CORS(app, resources={r"/api/*": {"origins": [config('FRONTEND_URL')]}})
    
     try:
         os.makedirs(app.instance_path)

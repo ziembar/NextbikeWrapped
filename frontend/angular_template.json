@@ -93,7 +93,7 @@
           "builder": "@netlify-builder/deploy:deploy",
           "options": {
             "outputPath": "dist/frontend",
-            "netlifyToken": "nfp_rNnN8nAno32x222x5CTtK6NmUnVd3F2A120d",
+            "netlifyToken": "token",
             "siteId": "nextbikewrapped"
           }
         }
