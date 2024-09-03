@@ -91,6 +91,6 @@ def create_app():
             "no_data": False
         })
 
-    # TODO: add logs to error handling
-    if __name__ == "__main__":
-        app.run()
+    return app
+if __name__ == "__main__":
+    app = create_app()
