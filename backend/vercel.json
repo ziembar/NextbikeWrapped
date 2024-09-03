@@ -1,31 +1,8 @@
 {
-    "builds": [
-        {
-            "src": "src/app.py",
-            "use": "@vercel/python"
-        },
-        {
-            "src": "src/db_actions.py",
-            "use": "@vercel/python"
-        },
-        {
-            "src": "src/defs.py",
-            "use": "@vercel/python"
-        },
-        {
-            "src": "src/google_requests.py",
-            "use": "@vercel/python"
-        },
-        {
-            "src": "static/**",
-            "use": "@vercel/static"
-        }
-
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "src/app.py"
-        }
-    ]
-}
+    "functions": {
+      "src/app.py": {
+        "includeFiles": "src/**"
+      }
+    },
+    "routes": [{ "src": "/", "dest": "src/app.py" }]
+  }
