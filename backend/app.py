@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 import os
 from decouple import config
 from datetime import datetime
-import defs
+from .api.defs import *
 from flask_cors import CORS
 
 
