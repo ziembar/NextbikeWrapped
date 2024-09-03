@@ -5,28 +5,27 @@
             "use": "@vercel/python"
         },
         {
+            "src": "src/db_actions.py",
+            "use": "@vercel/python"
+        },
+        {
+            "src": "src/defs.py",
+            "use": "@vercel/python"
+        },
+        {
+            "src": "src/google_requests.py",
+            "use": "@vercel/python"
+        },
+        {
             "src": "static/**",
             "use": "@vercel/static"
         }
+
     ],
     "routes": [
         {
             "src": "/(.*)",
             "dest": "src/app.py"
         }
-    ],
-        "functions": {
-        "src/google_requests.py": {
-            "memory": 3009,
-            "maxDuration": 60
-        },
-        "src/defs.js": {
-            "memory": 3009,
-            "maxDuration": 60
-        },
-        "src/db_actions.js": {
-            "memory": 3009,
-            "maxDuration": 60
-        }
-  }
+    ]
 }
