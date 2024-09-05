@@ -13,11 +13,9 @@
 <div *ngIf="data()">
 
     <div class="horizontal-wrapper">
-        <div style="width: 100%; padding: 10%; padding-top: 12px;">
+        <div style="margin-left: 10%; margin-right: 10%;">
             <app-statistics  [season]="season()"  [data]="data()" [name]="name"></app-statistics>
         </div>
-
-        <p-button label="Wybierz inny przedział czasu" (click)="back()" class="p-button-secondary bottom-button"></p-button>
     </div>
 </div>
 

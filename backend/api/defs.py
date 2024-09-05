@@ -4,7 +4,7 @@ from db_actions import *
 from Models import getDriver
 import requests
 import json
-from google_requests import distance_matrix_request
+from google_requests import *
 import jwt
 
 
@@ -38,7 +38,6 @@ def get_login_key(phone, pin):
 def get_events(loginkey):
     api_key = get_api_key()
     url = f"https://api.nextbike.net/api/v1.1/list.json?api_key={api_key}&loginkey={loginkey}&limit=none"
-    print(url)
     api_key = requests.get("https://webview.nextbike.net/getAPIKey.json").json()['apiKey']
 
     headers = {

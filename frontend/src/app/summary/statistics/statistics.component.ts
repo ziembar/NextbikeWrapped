@@ -1,4 +1,4 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Loader } from '@googlemaps/js-api-loader';
 import moment from 'moment';
@@ -32,12 +32,16 @@ export class StatisticsComponent{
   @Input() data: Data;
   @Input() season: {name: undefined, startValue: undefined, endValue: undefined};
   @Input() name: string;
+  @Output() seasonChange = new EventEmitter<{name: string, startValue: number, endValue: number}>();
 
 
 
   constructor(private router: Router) {}
+  dates: Date[] | undefined;
 
-  
+
+  seasons: {name: string, startValue: number, endValue: number}[] = []
+
 
   ngOnInit() {
     const cookie = localStorage.getItem('cookie');
@@ -45,22 +49,39 @@ export class StatisticsComponent{
       this.router.navigate(['/login']);
     }
 
-    // const loader = new Loader({
-    //   apiKey: "YOUR_API_KEY",
-    // });
-
-    // loader.load().then(async () => {
-    //   const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-    //   let map = new Map(document.getElementById("mapDiv") as HTMLElement, {
-    //     center: { lat: -34.397, lng: 150.644 },
-    //     zoom: 8,
-    //   });
-    // });
+    for(let name = new Date().getFullYear(); name >= 2022; name--) {
+      let startValue = new Date(`${name}/01/01 00:00:01`).getTime()/1000;
+      let endValue = new Date(`${name}/12/31 23:59:59`).getTime()/1000;
+    this.seasons.push({name: `${name}`, startValue, endValue});
     
   }
-
+  }
   formatDate(date: number) {
     return moment.unix(date).format('DD.MM.YYYY');
+  }
+
+
+
+
+  openModal() {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage') as HTMLImageElement;
+    modal.style.display = 'block';
+    modalImg.src = this.data.map;
+  }
+
+  closeModal(event: MouseEvent) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage') as HTMLImageElement;
+    if (event.target === modal || event.target === modalImg) {
+      modal.style.display = 'none';
+    }
+  }
+
+  
+  selectSeason(season: {name: string, startValue: number, endValue: number}) {
+    console.log('Selected season:', season.startValue, season.endValue);
+    this.seasonChange.emit(season);
   }
 
   

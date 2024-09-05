@@ -31,7 +31,7 @@ export class SummaryComponent {
         else {
           this.router.navigate(['/login']);
         }
-        this.setSeason({name: Date.now().toLocaleString(), startValue: null, endValue: null});
+        this.setSeason({name: new Date().getFullYear().toString(), startValue: null, endValue: null});
       }
 
   setSeason(season: {name: string, startValue: any, endValue: any}) {

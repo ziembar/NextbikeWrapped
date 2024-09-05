@@ -56,10 +56,20 @@ def static_map_request(g_rentals):
         place = f"{route['start_place_lat']},{route['start_place_lng']}|{route['end_place_lat']},{route['end_place_lng']}"
         times_traveled = route['amount']
 
-        # Create path style
-        path_style = f'path=color:0x966A91A9|weight:{math.ceil(math.sqrt(times_traveled))*2}|geodesic:true'
+        if times_traveled == 1:
+            color = '0x808080'  # Gray
+        elif 2 <= times_traveled <= 3:
+            color = '0xffb84d'  # Yellow
+        elif 3 <= times_traveled <= 6:
+            color = '0x00FF00'  # Light green
+        elif 6 <= times_traveled <= 10:
+            color = '0x006400'  # Light green
+        else:
+            color = '0x006600'  # Dark green
 
-        # Create path locations
+        path_style = f'path=color:{color}|weight:2|geodesic:true'
+
+        print(path_style)
 
         # Combine path style and locations
         path = f'{path_style}|{place}'
