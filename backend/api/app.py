@@ -80,7 +80,7 @@ def get_data():
         g_data = group_rentals(filtered_deduped_data)
 
         top_rides = top_frequent_rides(g_data)
-        total_distanc, longest_ride = total_distance(g_data)
+        distance, longest_ride = total_distance(g_data)
         b64map = static_map_request(g_data)
     except Exception as e:
         return str(e), 500
@@ -91,7 +91,7 @@ def get_data():
         "total_cost": total_cost,
         "total_gain": total_gain,
         "top_rides": top_rides,
-        "total_distance": total_distanc,
+        "total_distance": distance,
         "longest_ride": longest_ride,
         "map": b64map,
         "no_data": False

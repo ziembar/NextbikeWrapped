@@ -11,5 +11,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 WORKDIR /usr/src/app/backend/api
  
-# CMD [ "/bin/ls", "-la" ]
 CMD ["flask", "run", "--host=0.0.0.0"]

@@ -10,6 +10,8 @@ services:
             - ./frontend:/usr/src/app/frontend
         depends_on:
             - nextbikewrapped-back
+        environment:
+            - API_URL=${API_URL}
 
     nextbikewrapped-back:
         build:
