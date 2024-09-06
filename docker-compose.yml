@@ -1,0 +1,29 @@
+version: "3"
+services:
+    nextbikewrapped-front:
+        build:
+            context: .
+            dockerfile: frontend/Dockerfile
+        ports:
+            - 4200:4200
+        volumes:
+            - ./frontend:/usr/src/app/frontend
+        depends_on:
+            - nextbikewrapped-back
+
+    nextbikewrapped-back:
+        build:
+            context: .
+            dockerfile: backend/Dockerfile
+        ports:
+            - 5000:5000
+        volumes:
+            - ./backend:/usr/src/app/backend
+        environment:
+            - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+            - GOOGLE_SIGNING_KEY=${GOOGLE_SIGNING_KEY}
+            - NEO4J_URI=${NEO4J_URI}
+            - NEO4J_USERNAME=${NEO4J_USERNAME}
+            - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+            - AURA_INSTANCEID=${AURA_INSTANCEID}
+            - AURA_INSTANCENAME=${AURA_INSTANCENAME}
