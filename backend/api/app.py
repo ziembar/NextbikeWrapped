@@ -40,10 +40,10 @@ def login():
 @app.route('/api/summary', methods=['GET', 'POST'])
 def get_data():
 
-    if os.path.exists('res.pickle'):
-        with open('res.pickle', 'rb') as file:
-            res = pickle.load(file)
-        return jsonify(res), 200
+    # if os.path.exists('res.pickle'):
+    #     with open('res.pickle', 'rb') as file:
+    #         res = pickle.load(file)
+    #     return jsonify(res), 200
     
     try:
         cookie = str(request.json['cookie'])

@@ -69,7 +69,6 @@ def static_map_request(g_rentals):
 
         path_style = f'path=color:{color}|weight:2|geodesic:true'
 
-        print(path_style)
 
         # Combine path style and locations
         path = f'{path_style}|{place}'

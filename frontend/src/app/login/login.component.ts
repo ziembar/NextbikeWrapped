@@ -38,7 +38,6 @@ export class LoginComponent {
 
     if(this.exp && this.cookie) {
       if(Date.now()/1000 < parseInt(this.exp)) {
-        console.log(Date.now()/1000 , parseInt(this.exp))
           this.authorized.set(true)
       }
   }

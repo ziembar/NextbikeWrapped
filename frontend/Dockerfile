@@ -4,23 +4,24 @@ WORKDIR /usr/src/app/frontend
 
 COPY frontend .
 
+RUN chmod +x /usr/src/app/frontend/startup.sh
+
 RUN npm install -g @angular/cli
 
 RUN npm install
 
-# Build the Angular project
+RUN /usr/src/app/frontend/startup.sh
+
+
 RUN ng build
 
-# Stage 2: Serve the Angular application with nginx
 FROM nginx:alpine
 
-# Copy the built Angular files from the previous stage
-COPY --from=build /usr/src/app/frontend/dist /usr/share/nginx/html
+RUN rm /usr/share/nginx/html/index.html
 
-# Copy custom nginx configuration if needed
-# COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port 80 to the outside world
+COPY --from=build /usr/src/app/frontend/dist/frontend/browser/* /usr/share/nginx/html
+
 EXPOSE 80
 
 # Start nginx
