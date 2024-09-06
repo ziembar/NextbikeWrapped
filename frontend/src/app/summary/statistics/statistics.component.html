@@ -1,55 +1,61 @@
 
-<body class="bg-neutral-100">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <div class="min-h-screen p-6 md:p-10" *ngIf="!data.no_data">
+<body class="bg-funky">
+    <div class="min-h-screen p-6 ph-10p md:p-10" *ngIf="!data.no_data">
       <header class="mb-8">
         <div class="flex items-center justify-between">
-          <div class="bg-neutral-300 p-4 rounded-lg">
-            <span class="text-white">BikeWrap Logo</span>
+          <div class="p-4 rounded-lg  m-auto">
+            <img src="../../../assets/images/logo-transparent.png" class="w-full">
           </div>
-          <p-calendar
-            #calendar
-            [(ngModel)]="dates"
-            [readonlyInput]="true"
-            [showButtonBar]="false"
-            [selectionMode]="'range'">>
-            <ng-template pTemplate="footer">
-            <div class="calendar-footer">
-                <p-button
-                label="Anuluj"
-                class="calendar-button1"
-                (onClick)="calendar.hideOverlay()"
-                ></p-button>
-                <p-button
-                label="Zatwierdź"
-                class="calendar-button2"
-                (onClick)="selectSeason({name: 'custom', startValue: this.dates[0].getTime()/1000, endValue: this.dates[1].getTime()/1000})"
-                ></p-button>
-            </div>
+          
+        </div>
 
-
-
-      </ng-template>
-      </p-calendar>
+        <div class="calendar-modal">
+          <div class="modal-backdrop" (click)="hideCalendar()"></div>
+          <div class="modal-content">
+            <p-calendar
+              #calendar
+              [(ngModel)]="dates"
+              [readonlyInput]="true"
+              [showButtonBar]="false"
+              [inline]="true"
+              [selectionMode]="'range'">
+              <ng-template pTemplate="footer">
+                <div class="calendar-footer">
+                  <p-button
+                    label="Anuluj"
+                    class="calendar-button1"
+                    (onClick)="hideCalendar()"
+                  ></p-button>
+                  <p-button
+                    label="Zatwierdź"
+                    class="calendar-button2"
+                    (onClick)="selectSeason({name: 'custom', startValue: this.dates[0].getTime()/1000, endValue: this.dates[1].getTime()/1000})"
+                  ></p-button>
+                </div>
+              </ng-template>
+            </p-calendar>
+          </div>
         </div>
       </header>
   
       <main>
-        <span class="text-1">Tak właśnie jeździsz, {{name}}</span>
-  
+        <div style="padding-bottom: 4rem;">
+        <span class="text-1">Hej {{name}}, dobrze Cię widzieć!</span>
+      </div>
         <div>
-          <h3 *ngIf="season.name !== 'custom'">
-            Podsumowanie sezonu <span style="font-weight: bold;">{{season.name}}</span>
-          </h3>
-          <h3 *ngIf="season.name === 'custom'">
-            Podsumowanie od {{ formatDate(season.startValue) }} do {{ formatDate(season.endValue) }}
-          </h3>
+          
+          <p *ngIf="season.name !== 'custom'" style="font-size: x-large;">
+            Oto twoje podsumowanie sezonu <span style="font-weight: bold;">{{season.name}}</span>. Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a>
+          </p>
+          <p *ngIf="season.name === 'custom'" style="font-size: x-large;">
+            Oto twoje podsumowanie dni <span style="font-weight: bold;">{{ formatDate(season.startValue) }} - {{ formatDate(season.endValue) }}</span>. Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a>.
+          </p>
+
   
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div class="bg-white p-6 rounded-lg shadow-md">
-              <h2 class="text-2xl font-bold mb-2">Total Mileage</h2>
-              <p class="text-4xl font-bold">{{ (data.total_distance / 1000).toFixed(1) }} km</p>
+              <h2 class="text-2xl font-bold mb-2"><p pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google">Total Mileage <i class="pi pi-question-circle"></i></p></h2>
+              <p class="text-4xl font-bold"  >{{ (data.total_distance / 1000).toFixed(1) }} km</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
               <h2 class="text-2xl font-bold mb-2">Total Spending</h2>
@@ -57,7 +63,7 @@
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
               <h2 class="text-2xl font-bold mb-2">Total Time</h2>
-              <p class="text-4xl font-bold">{{ data.total_time }} minut</p>
+              <p class="text-4xl font-bold">{{floor(data.total_time / 60) }} h, {{ (data.total_time % 60).toFixed(0) }} min</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
               <h2 class="text-2xl font-bold mb-2">Total Rents</h2>
@@ -78,6 +84,7 @@
 
               <div>
                 <p class="text-4xl font-bold">{{(data.longest_ride.distance / 1000).toFixed(1)}} km</p>
+                <p class="text-4xl font-bold">{{(data.longest_ride.time / 60).toFixed(0)}} min</p>
               </div>
             </div>
           </div>

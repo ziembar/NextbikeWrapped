@@ -37,7 +37,8 @@ export class LoginComponent {
 
 
     if(this.exp && this.cookie) {
-      if(Date.now() < parseInt(this.exp)) {
+      if(Date.now()/1000 < parseInt(this.exp)) {
+        console.log(Date.now()/1000 , parseInt(this.exp))
           this.authorized.set(true)
       }
   }
@@ -60,7 +61,9 @@ export class LoginComponent {
       }
       this.loading.set(false)
       localStorage.setItem('cookie', response.cookie);
-      localStorage.setItem('name', response.name);
+      const username = response.name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+      localStorage.setItem('name', username);
       localStorage.setItem('exp', response.exp);
       this.router.navigate(['/summary']);
     }, error => {

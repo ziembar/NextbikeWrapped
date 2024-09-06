@@ -6,9 +6,16 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = environment.apiUrl || 'http://127.0.0.1:5000/api';
 
-  constructor(private http: HttpClient) {}
+  
+  private apiUrl = environment.apiUrl;
+  
+
+  constructor(private http: HttpClient) {
+    if (environment.apiUrl == 'API_URL_PLACEHOLDER' || !environment.apiUrl) {
+      this.apiUrl =  'http://localhost:5000';
+    }
+  }
 
 
   login(number: string, pin: string): Observable<any> {
