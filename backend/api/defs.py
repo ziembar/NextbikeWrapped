@@ -218,7 +218,7 @@ def total_distance(data):
         total_distance +=distance_matrix_request([rental], longest_ride)
 
     if longest_ride.get('reversed'):
-        top_ride = {"start_place": longest_ride['rent']['end_place_name'], "end_place": longest_ride['rent']['start_place_name'], "distance": longest_ride['distance'], "time": longest_ride['rent']['end_time'] - longest_ride['rent']['start_time']}
+        top_ride = {"start_place": longest_ride['rent']['end_place_name'], "end_place": longest_ride['rent']['start_place_name'], "distance": longest_ride['distance']}
     else:
-        longest_ride = {"start_place": longest_ride['rent']['start_place_name'], "end_place": longest_ride['rent']['end_place_name'], "distance": longest_ride['distance'], "time": longest_ride['rent']['end_time'] - longest_ride['rent']['start_time']}
+        longest_ride = {"start_place": longest_ride['rent']['start_place_name'], "end_place": longest_ride['rent']['end_place_name'], "distance": longest_ride['distance']}
     return total_distance, longest_ride

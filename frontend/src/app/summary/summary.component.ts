@@ -36,7 +36,6 @@ export class SummaryComponent {
 
   setSeason(season: {name: string, startValue: any, endValue: any}) {
     this.season.set(season);
-    this.data.set(undefined)
     this.getData(season.startValue, season.endValue);
   }
 

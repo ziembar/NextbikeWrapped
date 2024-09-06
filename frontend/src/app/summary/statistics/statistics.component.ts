@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { Loader } from '@googlemaps/js-api-loader';
 import moment from 'moment';
 
 interface Data {
@@ -10,7 +11,7 @@ interface Data {
   total_rides: number;
   total_time: number;
   top_rides: string[][];
-  longest_ride: {start_place: string, end_place: string, distance: number, time: number};
+  longest_ride: {start_place: string, end_place: string, distance: number};
   map: string;
   no_data: boolean;
 }
@@ -48,16 +49,17 @@ export class StatisticsComponent{
       this.router.navigate(['/login']);
     }
 
+    for(let name = new Date().getFullYear(); name >= 2022; name--) {
+      let startValue = new Date(`${name}/01/01 00:00:01`).getTime()/1000;
+      let endValue = new Date(`${name}/12/31 23:59:59`).getTime()/1000;
+    this.seasons.push({name: `${name}`, startValue, endValue});
+    
   }
-
-
+  }
   formatDate(date: number) {
     return moment.unix(date).format('DD.MM.YYYY');
   }
 
-  floor(num: number) {
-    return Math.floor(num);
-  }
 
 
 
@@ -80,19 +82,8 @@ export class StatisticsComponent{
   selectSeason(season: {name: string, startValue: number, endValue: number}) {
     console.log('Selected season:', season.startValue, season.endValue);
     this.seasonChange.emit(season);
-    this.hideCalendar()
   }
 
-  showCalendar() {
-    const calendar = document.getElementsByClassName('calendar-modal')[0] as HTMLElement;
-    calendar.style.display = 'block';
-    console.log('Calendar displayed');
-  }
-
-  hideCalendar() {
-    const calendar = document.getElementsByClassName('calendar-modal')[0] as HTMLElement;
-    calendar.style.display = 'none';
-  }
   
 
 }

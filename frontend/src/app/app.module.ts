@@ -23,6 +23,7 @@ import { PrimeNGConfig } from 'primeng/api';
 
 
 
+import { SeasonSelectionComponent } from './summary/season-selection/season-selection.component';
 import { StatisticsComponent } from './summary/statistics/statistics.component';
 
 
@@ -31,6 +32,7 @@ declarations: [
     LoginComponent,
     SummaryComponent,
     AppComponent,
+    SeasonSelectionComponent,
     StatisticsComponent
   ],
   imports: [
@@ -62,7 +64,7 @@ declarations: [
   bootstrap: [
     AppComponent
   ],
-  exports: [RouterModule, StatisticsComponent]
+  exports: [RouterModule, SeasonSelectionComponent, StatisticsComponent]
 
 })
 export class AppModule implements OnInit{ 
