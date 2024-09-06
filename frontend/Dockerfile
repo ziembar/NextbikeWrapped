@@ -1,18 +1,27 @@
-FROM node:alpine
+FROM node:alpine as build
 
 WORKDIR /usr/src/app/frontend
 
 COPY frontend .
 
-RUN chmod +x /usr/src/app/frontend/startup.sh
-
 RUN npm install -g @angular/cli
 
 RUN npm install
 
-WORKDIR /usr/src/app/frontend/src
-EXPOSE 5000
+# Build the Angular project
+RUN ng build --prod
 
+# Stage 2: Serve the Angular application with nginx
+FROM nginx:alpine
 
-ENTRYPOINT ["/usr/src/app/frontend/startup.sh"]
-CMD ["ng", "serve", "--host", "0.0.0.0", "--disable-host-check"]
+# Copy the built Angular files from the previous stage
+COPY --from=build /usr/src/app/frontend/dist /usr/share/nginx/html
+
+# Copy custom nginx configuration if needed
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80 to the outside world
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
