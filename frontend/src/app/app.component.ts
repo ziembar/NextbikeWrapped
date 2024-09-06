@@ -1,7 +1,4 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { SeasonSelectionComponent } from './summary/season-selection/season-selection.component';
-import { StatisticsComponent } from './summary/statistics/statistics.component';
 
 @Component({
   selector: 'app-root',
