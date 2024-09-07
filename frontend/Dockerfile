@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:1.2
 FROM node:alpine as build
 
 WORKDIR /usr/src/app/frontend
@@ -10,7 +11,7 @@ RUN npm install -g @angular/cli
 
 RUN npm install
 
-RUN /usr/src/app/frontend/startup.sh
+RUN --mount=type=secret,id=api_url,dst=/etc/secrets/api_url cat /etc/secrets/api_url | /usr/src/app/frontend/startup.sh
 
 
 RUN ng build
