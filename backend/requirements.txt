@@ -1,10 +1,12 @@
 blinker==1.7.0
+bson==0.5.10
 certifi==2024.2.2
 cffi==1.17.0
 charset-normalizer==3.3.2
 click==8.1.7
 cryptography==43.0.0
-Flask==3.0.3
+dnspython==1.16.0
+Flask==3.0.2
 Flask-Cors==4.0.0
 googlemaps==4.10.0
 idna==3.6
@@ -16,6 +18,7 @@ neomodel==5.2.1
 pandas==2.2.1
 pycparser==2.22
 PyJWT==2.9.0
+pymongo==4.8.0
 python-dateutil==2.9.0.post0
 python-decouple==3.8
 pytz==2024.1
