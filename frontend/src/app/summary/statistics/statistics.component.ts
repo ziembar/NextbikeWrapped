@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import moment from 'moment';
 
@@ -39,13 +39,12 @@ export class StatisticsComponent{
   constructor(private router: Router) {}
   dates: Date[] | undefined;
 
-  ngOnInit(){
-    console.log(this.isOriginal())
-  }
-
-
   formatDate(date: number) {
     return moment.unix(date).format('DD.MM.YYYY');
+  }
+
+  goToLogin(){
+    this.router.navigate(['/login'])
   }
 
   floor(num: number) {
@@ -82,7 +81,6 @@ export class StatisticsComponent{
 
   
   selectSeason(season: {name: string, startValue: number, endValue: number}) {
-    console.log('Selected season:', season.startValue, season.endValue);
     this.seasonChange.emit(season);
     this.hideCalendar()
   }
@@ -90,7 +88,6 @@ export class StatisticsComponent{
   showCalendar() {
     const calendar = document.getElementsByClassName('calendar-modal')[0] as HTMLElement;
     calendar.style.display = 'block';
-    console.log('Calendar displayed');
   }
 
   hideCalendar() {

@@ -27,7 +27,6 @@ export class SummaryComponent {
 
       if(!id){
         if(exp && cookie) {
-          console.log(Date.now(), parseInt(exp));
           if(Date.now()/1000 > parseInt(exp)) {
               this.router.navigate(['/login']);
           }
@@ -68,20 +67,17 @@ export class SummaryComponent {
           throw 'Token not found';
         }
     }catch(e){
-        console.log(e);
         this.loading.set(false);
         this.router.navigate(['/login']);
         return;
     }
     this.apiService.getData(start, end, cookie, this.name, id).subscribe((response: any) => {
-      console.log('Data fetched:', response);
       this.data.set(response);
       const url = new URL(window.location.href);
       url.searchParams.set('id', response.id);
       window.history.replaceState({}, '', url.toString());
       this.loading.set(false);
     }, error => {
-      console.error('Failed to fetch data:', error);
       this.toast.add({life:5000, severity: 'error', summary: 'Ups.. coś poszło nie tak', detail: error.statusText });
       this.loading.set(false);
     });
