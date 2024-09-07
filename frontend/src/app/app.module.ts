@@ -24,6 +24,7 @@ import { PrimeNGConfig } from 'primeng/api';
 
 
 import { StatisticsComponent } from './summary/statistics/statistics.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 
 @NgModule({
@@ -58,6 +59,7 @@ declarations: [
   ],
   providers: [
     ApiService,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [
     AppComponent
