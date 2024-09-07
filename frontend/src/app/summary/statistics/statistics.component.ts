@@ -13,6 +13,8 @@ interface Data {
   longest_ride: {start_place: string, end_place: string, distance: number, time: number};
   map: string;
   no_data: boolean;
+  name: string;
+  id: string;
 }
 
 @Component({
@@ -30,7 +32,6 @@ export class StatisticsComponent{
 
   @Input() data: Data;
   @Input() season: {name: undefined, startValue: undefined, endValue: undefined};
-  @Input() name: string;
   @Output() seasonChange = new EventEmitter<{name: string, startValue: number, endValue: number}>();
 
 
@@ -38,16 +39,8 @@ export class StatisticsComponent{
   constructor(private router: Router) {}
   dates: Date[] | undefined;
 
-
-  seasons: {name: string, startValue: number, endValue: number}[] = []
-
-
-  ngOnInit() {
-    const cookie = localStorage.getItem('cookie');
-    if(cookie === null) {
-      this.router.navigate(['/login']);
-    }
-
+  ngOnInit(){
+    console.log(this.isOriginal())
   }
 
 
@@ -57,6 +50,17 @@ export class StatisticsComponent{
 
   floor(num: number) {
     return Math.floor(num);
+  }
+
+  isOriginal(){
+    try {
+      let name1 = localStorage.getItem('name');
+      let name2 = this.data.name.toLowerCase()
+      return name1.toLowerCase() === name2.toLowerCase()
+    } catch {
+      return false
+    }
+    
   }
 
 

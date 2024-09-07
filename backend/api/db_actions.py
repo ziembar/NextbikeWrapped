@@ -1,3 +1,5 @@
+from bson.objectid import ObjectId
+
 def add_station(driver, name, lat, lng, uid, city_id):
     driver.execute_query(
         "MERGE (s:Station {name: $name, lat: $lat, lng: $lng, uid: $uid, city_id: $city_id})",
@@ -47,3 +49,25 @@ def add_distance_relation(driver, uid1, uid2, distance, time):
     driver.execute_query(query, uid1=uid1, uid2=uid2, distance=distance, time=time, database_="neo4j")
     driver.close()
 
+
+def write_summary_db(client, summary):
+    db = client['UsersSummaries']
+    summaries = db["summaries"]
+    try:
+        result = summaries.insert_one(summary)
+        return result.inserted_id
+    except:
+        raise Exception("Inserting summary not suceeded")
+
+
+def read_summary_db(client, objectId):
+    db = client['UsersSummaries']
+    summaries = db["summaries"]
+    try:
+        res = summaries.find_one({"_id": ObjectId(objectId)})
+        res['id'] = str(res['_id'])
+        res.pop('_id', None)
+        return res
+    except Exception as e:
+        print(f"Exception occurred: {e}")
+        raise Exception("Pulling summary not succeeded") from e

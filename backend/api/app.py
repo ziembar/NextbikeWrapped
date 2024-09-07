@@ -44,9 +44,24 @@ def get_data():
     #     with open('res.pickle', 'rb') as file:
     #         res = pickle.load(file)
     #     return jsonify(res), 200
+    try:
+        summary_id = str(request.json['id'])
+        if summary_id:
+            try:
+                res = read_summary(summary_id)
+                if res:
+                    return jsonify(res), 200
+                else:
+                    return "Summary not found", 404
+            except Exception as e:
+                return str(e), 500
+    except:
+        pass
+
     
     try:
         cookie = str(request.json['cookie'])
+        name = str(request.json['name'])
 
     except:
         return "Invalid request", 400
@@ -94,11 +109,15 @@ def get_data():
         "total_distance": distance,
         "longest_ride": longest_ride,
         "map": b64map,
-        "no_data": False
+        "name": name
     }
 
     # Save 'res' into a pickle file
-    with open('res.pickle', 'wb') as file:
-        pickle.dump(res, file)
+    # with open('res.pickle', 'wb') as file:
+    #     pickle.dump(res, file)
+
+    summary_id = write_summary(res.copy())
+
+    res['id'] = str(summary_id)
 
     return jsonify(res), 200

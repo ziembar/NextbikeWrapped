@@ -1,6 +1,8 @@
 from neo4j import GraphDatabase
 from neomodel import (config, StructuredNode, StringProperty, Relationship, FloatProperty, IntegerProperty, StructuredRel)
 from decouple import config as env_config
+from pymongo.mongo_client import MongoClient
+from collections.abc import MutableMapping
 
 
 uri = env_config('NEO4J_URI')
@@ -9,6 +11,12 @@ driver = GraphDatabase.driver(uri, auth=auth)
 
 config.DRIVER = driver
 
+uri_mongo = env_config('MONGODB_URI')
+mongo_client = MongoClient(uri_mongo)
+
+
+def getMongoClient():
+    return mongo_client
 
 def getDriver():
     return driver

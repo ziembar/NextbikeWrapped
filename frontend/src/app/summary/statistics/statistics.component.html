@@ -40,15 +40,17 @@
   
       <main>
         <div style="padding-bottom: 4rem;">
-        <span class="text-1">Hej {{name}}, dobrze Cię widzieć!</span>
-      </div>
+        <span *ngIf="isOriginal()" class="text-1">Hej {{data.name}}, dobrze Cię widzieć!</span>
+        <span *ngIf="!isOriginal()" class="text-1">Podsumowanie użytkownika {{data.name}}</span>
+
+        </div>
         <div>
           
           <p *ngIf="season.name !== 'custom'" style="font-size: x-large;">
-            Oto twoje podsumowanie sezonu <span style="font-weight: bold;">{{season.name}}</span>. Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a>
+            Oto <span *ngIf="isOriginal()">twoje </span>podsumowanie sezonu <span style="font-weight: bold;">{{season.name}}</span>. Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a>
           </p>
-          <p *ngIf="season.name === 'custom'" style="font-size: x-large;">
-            Oto twoje podsumowanie dni <span style="font-weight: bold;">{{ formatDate(season.startValue) }} - {{ formatDate(season.endValue) }}</span>. Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a>.
+          <p *ngIf="season.name === 'custom' && isOriginal()" style="font-size: x-large;">
+            Oto <span *ngIf="isOriginal()">twoje </span>podsumowanie dni <span style="font-weight: bold;">{{ formatDate(season.startValue) }} - {{ formatDate(season.endValue) }}</span>. Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a>.
           </p>
 
   

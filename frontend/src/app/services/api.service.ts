@@ -22,7 +22,13 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/api/login`, {"phone": number, "pin": pin });
   }
 
-  getData(start: any, end: any, cookie: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/summary`, {start, end, cookie });
+  getData(start: any, end: any, cookie: string, name: string, id: any): Observable<any> {
+    if(id){
+      return this.http.post(`${this.apiUrl}/api/summary`, {start, end, cookie, name, id });
+    }
+    else {
+      return this.http.post(`${this.apiUrl}/api/summary`, {start, end, cookie, name });
+
+    }
   }
 }

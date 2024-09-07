@@ -21,7 +21,11 @@ export class SummaryComponent {
     ngOnInit() {
       const cookie = localStorage.getItem('cookie');
       const exp = localStorage.getItem('exp');
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
 
+      if(!id){
         if(exp && cookie) {
           console.log(Date.now(), parseInt(exp));
           if(Date.now()/1000 > parseInt(exp)) {
@@ -33,6 +37,8 @@ export class SummaryComponent {
         }
         this.setSeason({name: new Date().getFullYear().toString(), startValue: null, endValue: null});
       }
+      this.setSeason({name: new Date().getFullYear().toString(), startValue: null, endValue: null});
+    }
 
   setSeason(season: {name: string, startValue: any, endValue: any}) {
     this.season.set(season);
@@ -50,9 +56,13 @@ export class SummaryComponent {
   getData(start: any, end: any){
     this.loading.set(true);
     let cookie = '';
+    let id: string;
     try{
         cookie = localStorage.getItem('cookie');
-        if (cookie === null) {
+        const urlParams = new URLSearchParams(window.location.search);
+        id = urlParams.get('id');
+
+        if (cookie === null && !id) {
           this.loading.set(false);
           this.toast.add({ severity: 'error', summary: 'Hmm.. spróbuj ponownie się zalogować', detail: 'Token not found' });
           throw 'Token not found';
@@ -63,9 +73,12 @@ export class SummaryComponent {
         this.router.navigate(['/login']);
         return;
     }
-    this.apiService.getData(start, end, cookie).subscribe((response: any) => {
+    this.apiService.getData(start, end, cookie, this.name, id).subscribe((response: any) => {
       console.log('Data fetched:', response);
       this.data.set(response);
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', response.id);
+      window.history.replaceState({}, '', url.toString());
       this.loading.set(false);
     }, error => {
       console.error('Failed to fetch data:', error);

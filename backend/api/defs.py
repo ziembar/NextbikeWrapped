@@ -1,7 +1,7 @@
 import time
 from decouple import config
 from db_actions import *
-from Models import getDriver
+from Models import getDriver, getMongoClient
 import requests
 import json
 from google_requests import *
@@ -222,3 +222,12 @@ def total_distance(data):
     else:
         longest_ride = {"start_place": longest_ride['rent']['start_place_name'], "end_place": longest_ride['rent']['end_place_name'], "distance": longest_ride['distance'], "time": longest_ride['rent']['end_time'] - longest_ride['rent']['start_time']}
     return total_distance, longest_ride
+
+
+
+
+def write_summary(data):
+    return write_summary_db(getMongoClient(), data)
+
+def read_summary(objectId):
+    return read_summary_db(getMongoClient(), objectId)
