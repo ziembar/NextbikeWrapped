@@ -24,7 +24,7 @@ export class ApiService {
 
   getData(start: any, end: any, cookie: string, name: string, id: any): Observable<any> {
     if(id){
-      return this.http.post(`${this.apiUrl}/api/summary`, {start, end, cookie, name, id });
+      return this.http.post(`${this.apiUrl}/api/summary`, {id });
     }
     else {
       return this.http.post(`${this.apiUrl}/api/summary`, {start, end, cookie, name });
