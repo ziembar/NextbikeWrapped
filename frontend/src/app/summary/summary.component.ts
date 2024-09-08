@@ -42,6 +42,11 @@ export class SummaryComponent {
   setSeason(season: {name: string, startValue: any, endValue: any}) {
     this.season.set(season);
     this.data.set(undefined)
+
+    const urlObj = new URL(window.location.href);
+    urlObj.search = '';
+    window.history.replaceState({}, document.title, urlObj.toString());
+
     this.getData(season.startValue, season.endValue);
   }
 
