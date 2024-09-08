@@ -47,7 +47,7 @@
         <div>
           
           <p style="font-size: x-large;">
-            Oto <span *ngIf="isOriginal()">twoje </span>podsumowanie sezonu <span style="font-weight: bold;">{{data.season_name}}</span>.<span *ngIf="!isOriginal()">Jesteś ciekaw swojego? <span style="cursor: pointer; font-weight: bold;" (click)="goToLogin()">Kliknij tutaj!</span></span> <span *ngIf="isOriginal()">Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a></span>
+            Oto <span *ngIf="isOriginal()">twoje </span>podsumowanie {{data.season_name.length == 4 ? 'sezonu ' : 'dni '}} <span style="font-weight: bold;">{{data.season_name}}</span>. <span *ngIf="!isOriginal()">Jesteś ciekaw swojego? <span style="cursor: pointer; font-weight: bold;" (click)="goToLogin()">Kliknij tutaj!</span></span> <span *ngIf="isOriginal()">Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a></span>
           </p>
 
 
