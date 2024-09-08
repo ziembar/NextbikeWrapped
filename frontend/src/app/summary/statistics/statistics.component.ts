@@ -15,6 +15,7 @@ interface Data {
   no_data: boolean;
   name: string;
   id: string;
+  season_name: string;
 }
 
 @Component({

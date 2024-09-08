@@ -29,25 +29,24 @@ export class SummaryComponent {
         if(exp && cookie) {
           if(Date.now()/1000 > parseInt(exp)) {
               this.router.navigate(['/login']);
+              return
           }
         }
         else {
           this.router.navigate(['/login']);
+          return
         }
         this.setSeason({name: new Date().getFullYear().toString(), startValue: null, endValue: null});
+        return
       }
-      this.setSeason({name: new Date().getFullYear().toString(), startValue: null, endValue: null});
+      this.getData(null, id);
     }
 
   setSeason(season: {name: string, startValue: any, endValue: any}) {
     this.season.set(season);
     this.data.set(undefined)
 
-    const urlObj = new URL(window.location.href);
-    urlObj.search = '';
-    window.history.replaceState({}, document.title, urlObj.toString());
-
-    this.getData(season.startValue, season.endValue);
+    this.getData(season, null);
   }
 
 
@@ -56,17 +55,29 @@ export class SummaryComponent {
     this.loading.set(false);
   }
 
+  
 
-  getData(start: any, end: any){
+
+  getData(season: any, id: any){
     this.loading.set(true);
+    if(id){
+      this.apiService.getData(null, null, null, id).subscribe((response: any) => {
+        this.data.set(response);
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', response.id);
+        window.history.replaceState({}, '', url.toString());
+        this.loading.set(false);
+      }, error => {
+        this.toast.add({life:5000, severity: 'error', summary: 'Ups.. coś poszło nie tak', detail: error.statusText });
+        this.loading.set(false);
+      });
+      return
+    }
+
     let cookie = '';
-    let id: string;
     try{
         cookie = localStorage.getItem('cookie');
-        const urlParams = new URLSearchParams(window.location.search);
-        id = urlParams.get('id');
-
-        if (cookie === null && !id) {
+        if (cookie === null) {
           this.loading.set(false);
           this.toast.add({ severity: 'error', summary: 'Hmm.. spróbuj ponownie się zalogować', detail: 'Token not found' });
           throw 'Token not found';
@@ -76,7 +87,8 @@ export class SummaryComponent {
         this.router.navigate(['/login']);
         return;
     }
-    this.apiService.getData(start, end, cookie, this.name, id).subscribe((response: any) => {
+
+    this.apiService.getData(season, cookie, this.name, null).subscribe((response: any) => {
       this.data.set(response);
       const url = new URL(window.location.href);
       url.searchParams.set('id', response.id);

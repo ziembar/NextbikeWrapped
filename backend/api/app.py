@@ -67,9 +67,12 @@ def get_data():
         return "Invalid request", 400
 
     current_time = int(datetime.now().timestamp())
+    season_name = str(request.json['season_name'])
+
     try:
         start = int(request.json['start'])
         end = int(request.json['end'])
+
     except:
         start = 0
         end = current_time
@@ -109,7 +112,8 @@ def get_data():
         "total_distance": distance,
         "longest_ride": longest_ride,
         "map": b64map,
-        "name": name
+        "name": name,
+        "season_name": season_name,
     }
 
     # Save 'res' into a pickle file
