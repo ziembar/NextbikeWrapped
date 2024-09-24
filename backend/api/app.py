@@ -28,13 +28,14 @@ def login():
         phone = "48" + phone
     
     except:
-        return "Invalid request", 400
+        return jsonify({"statusText": "Invalid request"}), 401
+
 
     try:
         login_key, name, exp = get_login_key(phone, pin)
         return jsonify({"cookie": login_key, "name": name, "exp": exp, "code": 200}), 200
     except:
-        return "Invalid login credentials", 401
+        return jsonify({"statusText": "Invalid login credentials"}), 401
     
 
 @app.route('/api/summary', methods=['GET', 'POST'])
@@ -52,7 +53,8 @@ def get_data():
                 if res:
                     return jsonify(res), 200
                 else:
-                    return "Summary not found", 404
+                    return jsonify({"statusText": "Summary not found"}), 404
+
             except Exception as e:
                 return str(e), 500
     except:
@@ -64,7 +66,7 @@ def get_data():
         name = str(request.json['name'])
 
     except:
-        return "Invalid request", 400
+        return jsonify({"statusText": "Invalid request"}), 400
 
     current_time = int(datetime.now().timestamp())
     season_name = str(request.json['season_name'])
@@ -83,7 +85,8 @@ def get_data():
         if 'error' in events:
             raise Exception("Something went wrong, try logging again")
     except Exception as e: 
-        return str(e), 500
+        return jsonify({"statusText": str(e)}), 500
+
     
     try:
 

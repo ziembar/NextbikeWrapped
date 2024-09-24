@@ -30,7 +30,7 @@ export class LoginComponent {
 
   ngOnInit() {
     this.auth = this.formBuilder.group({
-      phone: [, [Validators.required, Validators.pattern(/^[0-9]{9}$/)]],
+      phone: [, [Validators.required, Validators.pattern(/^[0-9]{9}$/), Validators.minLength(9), Validators.maxLength(9)]],
       pin: [, [Validators.required, Validators.minLength(5), Validators.maxLength(6)]]
     });
 
