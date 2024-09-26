@@ -54,25 +54,25 @@
   
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div class="bg-white p-6 rounded-lg shadow-md">
-              <h2 class="text-2xl font-bold mb-2"><p pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google">Total Mileage <i class="pi pi-question-circle"></i></p></h2>
+              <h2 class="text-2xl font-bold mb-2"><p pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google">Przejechany dystans <i class="pi pi-question-circle"></i></p></h2>
               <p class="text-4xl font-bold"  >{{ (data.total_distance / 1000).toFixed(1) }} km</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
-              <h2 class="text-2xl font-bold mb-2">Total Spending</h2>
+              <h2 class="text-2xl font-bold mb-2">Wydane pieniądze</h2>
               <p class="text-4xl font-bold">{{ data.total_cost }} zł</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
-              <h2 class="text-2xl font-bold mb-2">Total Time</h2>
+              <h2 class="text-2xl font-bold mb-2">Całkowity czas</h2>
               <p class="text-4xl font-bold">{{floor(data.total_time / 60) }} h, {{ (data.total_time % 60).toFixed(0) }} min</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
-              <h2 class="text-2xl font-bold mb-2">Total Rents</h2>
+              <h2 class="text-2xl font-bold mb-2">Liczba przejazdów</h2>
               <p class="text-4xl font-bold">{{ data.total_rides }}</p>
             </div>
           </div>
   
           <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-2xl font-bold mb-4">Longest Ride</h2>
+            <h2 class="text-2xl font-bold mb-4">Najdłuższy przejazd</h2>
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-lg font-semibold">{{data.longest_ride.start_place}}</p>
@@ -90,7 +90,7 @@
           </div>
   
           <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-2xl font-bold mb-4">Top Rides</h2>
+            <h2 class="text-2xl font-bold mb-4">Najczęstsze przejazdy</h2>
             <div class="space-y-4 ">
               <div class="flex items-center justify-between bg-neutral-100 p-4 rounded-md  ride-top3 mb-2" *ngFor="let ride of data.top_rides">
                 <div>
@@ -101,19 +101,30 @@
             </div>
           </div>
   
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold mb-4">Your Ride Map</h2>
+          <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-bold mb-4">Mapka twoich tras</h2>
             <div class="bg-neutral-300 hwe rounded-md flex items-center justify-center overflow-hidden">
               <img [src]="data.map" alt="Mapa przejazdów" class="image" (click)="openModal()">
             </div>
           </div>
+
+          <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-bold mb-4">Podoba Ci się?</h2>
+            <div class="flex items-center space-x-4">
+              <p class="font-semibold">Udostępnij znajomym link do twojego podsumowania! Chcesz postawić mi piwko za włożoną pracę?</p>
+              <a href='https://ko-fi.com/L4L513X0K4' target='_blank'>
+                <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi3.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+              </a>
+            </div>
+            </div>
+          </div>
+
 
           <div id="imageModal" class="modal hidden" (click)="closeModal($event)">
             <img class="modal-content" id="modalImage">
           </div>
 
 
-        </div>
       </main>
     </div>
   

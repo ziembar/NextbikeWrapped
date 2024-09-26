@@ -35,7 +35,6 @@ def login():
 
     try:
         login_key, name, exp = get_login_key(phone, pin)
-        print(login_key, name, exp)
     except:
         return jsonify({"statusText": "Invalid login credentials"}), 401
     return jsonify({"cookie": login_key, "name": name, "exp": exp, "code": 200}), 200

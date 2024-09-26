@@ -73,10 +73,6 @@ countries: any[] | undefined;
 
 selectedCountry: any;
 
-print(event){
-  console.log(event)
-}
-
   login() {
     this.loading.set(true)
     const phone = this.selectedCountry.prefix.replace('+', '') + this.auth.get('phone').value;
