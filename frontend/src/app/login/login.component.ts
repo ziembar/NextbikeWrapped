@@ -36,16 +36,41 @@ export class LoginComponent {
 
 
 
+
+
     if(this.exp && this.cookie) {
       if(Date.now()/1000 < parseInt(this.exp)) {
           this.authorized.set(true)
       }
   }
+
+  this.countries = [
+    { name: 'Austria', code: 'AT', prefix: '+43' },
+    { name: 'Switzerland', code: 'CH', prefix: '+41' },
+    { name: 'Poland', code: 'PL', prefix: '+48' },
+    { name: 'Turkey', code: 'TR', prefix: '+90' },
+    { name: 'New Zealand', code: 'NZ', prefix: '+64' },
+    { name: 'Latvia', code: 'LV', prefix: '+371' },
+    { name: 'Cyprus', code: 'CY', prefix: '+357' },
+    { name: 'Germany', code: 'DE', prefix: '+49' }
+];
+this.selectedCountry = { name: 'Poland', code: 'PL', prefix: '+48' }
+
+
+
 }
 
 
 
+countries: any[] | undefined;
 
+selectedCountry: any;
+
+
+remove0(){
+  console.log(this.auth.get('phone').value)
+  this.auth.get('phone').setValue("");
+}
 
   login() {
     this.loading.set(true)

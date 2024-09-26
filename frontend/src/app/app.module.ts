@@ -16,6 +16,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { ImageModule } from 'primeng/image';
+import { DropdownModule } from 'primeng/dropdown';
+
 
 
 import { PrimeNGConfig } from 'primeng/api';
@@ -54,6 +56,7 @@ declarations: [
     ToastModule,
     TooltipModule,
     ImageModule,
+    DropdownModule,
 
 
   ],

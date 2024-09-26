@@ -200,3 +200,32 @@ body {
         padding: 20px;
     }
 }
+
+:host ::ng-deep .p-inputnumber-button-up{
+    display: none !important;
+}
+
+:host ::ng-deep .p-inputnumber-button-down {
+    padding: 0 !important;
+    width: auto;
+    background: none;
+    border: 1px solid #d1d5db;
+}
+
+:host ::ng-deep .p-dropdown-trigger{
+    display: none !important;
+}
+
+:host ::ng-deep .p-dropdown.p-dropdown-clearable .p-dropdown-label {
+    padding-right: 0.75rem;
+    border-radius: 0 !important;
+
+}
+
+@layer primeng {
+    :host ::ng-deep .p-dropdown {
+        border: 0 !important;
+        border-radius: 0 !important;
+
+    }
+}
