@@ -25,7 +25,6 @@ def get_login_key(phone, pin):
     }
 
     response = requests.post(url, data=data)
-    print(response.json())
 
     if 'error' in response.json():
         raise Exception(f"Login failed with code {response.json()['error']['code']}. Message: {response.json()['error']['message']}")
@@ -33,6 +32,7 @@ def get_login_key(phone, pin):
     token = response.json()['user']['appform_auth_token']
     decoded_token = jwt.decode(token, options={"verify_signature": False})
     exp = decoded_token.get("exp")
+
     return response.json()['user']['loginkey'], response.json()['user']['screen_name'], exp
 
 def get_events(loginkey):
@@ -231,3 +231,23 @@ def write_summary(data):
 
 def read_summary(objectId):
     return read_summary_db(getMongoClient(), objectId)
+
+def get_cookie(phone, pin):
+        url = "https://account.nextbike.pl/api/login"
+        headers = {
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Encoding": "gzip",
+            "Content-Type": "application/json",
+        }
+        data = {
+            "phone": phone,
+            "pin": pin,
+            "city": "vw",
+            "country_code":"48"
+        }
+
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        print(response.json())
+        name = response.json().get("login")
+
+        return response.headers['set-cookie'], name

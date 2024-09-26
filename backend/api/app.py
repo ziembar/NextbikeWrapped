@@ -14,9 +14,13 @@ import pickle
 app = Flask(__name__)
 cors = CORS(app)
 
-@app.route('/')
+@app.route('/api/test', methods=['POST', 'GET'])
 def hello():
-    return 'Hello, world'
+    phone = str(request.json['phone'])
+    pin = str(request.json['pin'])
+    cookie, name = get_cookie(phone, pin)
+    return jsonify({"cookie": cookie,"name": name})
+
 
 
 @app.route('/api/login', methods=['POST', 'GET'])
@@ -25,26 +29,21 @@ def login():
         phone = str(request.json['phone'])
         pin = request.json['pin']
 
-        phone = "48" + phone
-    
     except:
         return jsonify({"statusText": "Invalid request"}), 401
 
 
     try:
         login_key, name, exp = get_login_key(phone, pin)
-        return jsonify({"cookie": login_key, "name": name, "exp": exp, "code": 200}), 200
+        print(login_key, name, exp)
     except:
         return jsonify({"statusText": "Invalid login credentials"}), 401
+    return jsonify({"cookie": login_key, "name": name, "exp": exp, "code": 200}), 200
     
 
 @app.route('/api/summary', methods=['GET', 'POST'])
 def get_data():
 
-    # if os.path.exists('res.pickle'):
-    #     with open('res.pickle', 'rb') as file:
-    #         res = pickle.load(file)
-    #     return jsonify(res), 200
     try:
         summary_id = str(request.json['id'])
         if summary_id:
@@ -56,7 +55,8 @@ def get_data():
                     return jsonify({"statusText": "Summary not found"}), 404
 
             except Exception as e:
-                return str(e), 500
+                    return jsonify({"statusText": "Something went wrong..."}), 500
+
     except:
         pass
 
@@ -85,7 +85,8 @@ def get_data():
         if 'error' in events:
             raise Exception("Something went wrong, try logging again")
     except Exception as e: 
-        return jsonify({"statusText": str(e)}), 500
+            return jsonify({"statusText": "Something went wrong..."}), 500
+
 
     
     try:
@@ -104,7 +105,8 @@ def get_data():
         distance, longest_ride = total_distance(g_data)
         b64map = static_map_request(g_data)
     except Exception as e:
-        return str(e), 500
+        return jsonify({"statusText": "Something went wrong..."}), 500
+
 
     res = {
         "total_rides": total_rides,
@@ -118,10 +120,6 @@ def get_data():
         "name": name,
         "season_name": season_name,
     }
-
-    # Save 'res' into a pickle file
-    # with open('res.pickle', 'wb') as file:
-    #     pickle.dump(res, file)
 
     summary_id = write_summary(res.copy())
 

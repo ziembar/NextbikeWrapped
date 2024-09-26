@@ -38,24 +38,24 @@
 
                 
                     <p-inputNumber 
+                    #inputnumber
                         placeholder="Wpisz numer telefonu"
                         [useGrouping]="false"
                         class="rect"
-                        [step]="0"
+                        [step]=""
                         formControlName="phone"
                         [prefix]="selectedCountry.prefix"
                         [showButtons]="true"
                         buttonLayout="horizontal" >
                         <ng-template pTemplate="incrementbuttonicon"></ng-template>
 
-                        <ng-template pTemplate="decrementbuttonicon">
+                        <ng-template pTemplate="decrementbuttonicon" >
                     <p-dropdown 
                         [options]="countries"
                         appendTo="body"
                         [(ngModel)]="selectedCountry"
                         [ngModelOptions]="{standalone: true}"
                         [showClear]="true"
-                        (onFocus)="remove0()"
                         [ngStyle]="{'border': 'none'}">
                         
                         <ng-template pTemplate="dropdownicon"></ng-template>

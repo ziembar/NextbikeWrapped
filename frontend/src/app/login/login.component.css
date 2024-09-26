@@ -217,7 +217,7 @@ body {
 }
 
 :host ::ng-deep .p-dropdown.p-dropdown-clearable .p-dropdown-label {
-    padding-right: 0.75rem;
+    padding: 0.5rem;
     border-radius: 0 !important;
 
 }
@@ -228,4 +228,8 @@ body {
         border-radius: 0 !important;
 
     }
+}
+
+:host ::ng-deep .p-inputnumber-input{
+    border-radius: 0 6px 6px 0px !important;
 }

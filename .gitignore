@@ -63,3 +63,4 @@ backend/src/test.py
 backend/api/res.pickle
 frontend/package-lock.json
 frontend/package-lock.json
+backend/api/tests.py

@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { InputNumber } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginComponent {
 
 
   constructor(private apiService: ApiService, public router: Router, private formBuilder: FormBuilder) {}
-
+  @ViewChild('inputnumber') inputnumber: InputNumber;
 
   error = signal(false)
   loading = signal(false)
@@ -28,13 +29,15 @@ export class LoginComponent {
 
   auth: FormGroup
 
+
   ngOnInit() {
     this.auth = this.formBuilder.group({
       phone: [, [Validators.required, Validators.pattern(/^[0-9]{9}$/), Validators.minLength(9), Validators.maxLength(9)]],
       pin: [, [Validators.required, Validators.minLength(5), Validators.maxLength(6)]]
     });
 
-
+    setTimeout(
+      ()=>{this.inputnumber.spin = () => {}}, 300)
 
 
 
@@ -62,19 +65,21 @@ this.selectedCountry = { name: 'Poland', code: 'PL', prefix: '+48' }
 
 
 
+
+
+
+
 countries: any[] | undefined;
 
 selectedCountry: any;
 
-
-remove0(){
-  console.log(this.auth.get('phone').value)
-  this.auth.get('phone').setValue("");
+print(event){
+  console.log(event)
 }
 
   login() {
     this.loading.set(true)
-    const phone = this.auth.get('phone').value
+    const phone = this.selectedCountry.prefix.replace('+', '') + this.auth.get('phone').value;
     const pin = this.auth.get('pin').value
     this.apiService.login(phone, pin).subscribe((response: any) => {
       if(response.code !== 200) {

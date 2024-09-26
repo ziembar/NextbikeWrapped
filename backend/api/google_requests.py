@@ -54,6 +54,8 @@ def static_map_request(g_rentals):
     paths = []
     for route in g_rentals:
         place = f"{route['start_place_lat']},{route['start_place_lng']}|{route['end_place_lat']},{route['end_place_lng']}"
+        
+        
         times_traveled = route['amount']
 
         if times_traveled == 1:
