@@ -101,7 +101,7 @@ def get_data():
         g_data = group_rentals(filtered_deduped_data)
 
         top_rides = top_frequent_rides(g_data)
-        distance, longest_ride = total_distance(g_data)
+        distance, longest_ride, fastest_ride = total_distance(g_data)
         b64map = static_map_request(g_data)
     except Exception as e:
         return jsonify({"statusText": "Something went wrong..."}), 500
@@ -115,6 +115,7 @@ def get_data():
         "top_rides": top_rides,
         "total_distance": distance,
         "longest_ride": longest_ride,
+        "fastest_ride": fastest_ride,
         "map": b64map,
         "name": name,
         "season_name": season_name,

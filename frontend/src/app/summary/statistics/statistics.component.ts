@@ -11,6 +11,8 @@ interface Data {
   total_time: number;
   top_rides: string[][];
   longest_ride: {start_place: string, end_place: string, distance: number, time: number};
+  fastest_ride: {start_place: string, end_place: string, velocity: number};
+
   map: string;
   no_data: boolean;
   name: string;

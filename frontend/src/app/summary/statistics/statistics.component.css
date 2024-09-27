@@ -546,3 +546,4 @@ body {
 .space-x-4 > *:not(:last-child) {
   margin-right: 1rem; /* 16px space between items */
 }
+

@@ -159,6 +159,8 @@ def total_distance(data):
     # TODO: fix two-way distance calculation, add longest ride
     total_distance = 0
     longest_ride = {"distance": 0, "rent": None}
+    fastest_ride = {"velocity": 0, "rent": None}
+
     stations = {}
     for rental in data:
         start_station = rental['start_place']
@@ -198,6 +200,10 @@ def total_distance(data):
                     if longest_ride['distance'] < record['r'].get('distance'):
                         longest_ride['distance'] = record['r'].get('distance')
                         longest_ride['rent'] = grouped_rent
+
+                    if fastest_ride['velocity'] < (record['r'].get('distance')/1000) / ((grouped_rent['end_time'] - grouped_rent['start_time'])/3600):
+                        fastest_ride['velocity'] = (record['r'].get('distance')/1000) / ((grouped_rent['end_time'] - grouped_rent['start_time'])/3600)
+                        fastest_ride['rent'] = grouped_rent
                     filtered_data.remove(grouped_rent)
                     break
         if(len(filtered_data) != 0):
@@ -209,19 +215,25 @@ def total_distance(data):
                 start_index = i * chunk_size
                 end_index = min((i + 1) * chunk_size, len(filtered_data))
                 chunk = filtered_data[start_index:end_index]
-                total_distance += distance_matrix_request(chunk, longest_ride)
+                total_distance += distance_matrix_request(chunk, longest_ride, fastest_ride)
         
         # send request to google, add to db, add to sum
         data = [rec for rec in data if rec not in filtered_data_copy]
 
     for rental in data:
-        total_distance +=distance_matrix_request([rental], longest_ride)
+        total_distance +=distance_matrix_request([rental], longest_ride, fastest_ride)
 
     if longest_ride.get('reversed'):
         top_ride = {"start_place": longest_ride['rent']['end_place_name'], "end_place": longest_ride['rent']['start_place_name'], "distance": longest_ride['distance'], "time": longest_ride['rent']['end_time'] - longest_ride['rent']['start_time']}
     else:
         longest_ride = {"start_place": longest_ride['rent']['start_place_name'], "end_place": longest_ride['rent']['end_place_name'], "distance": longest_ride['distance'], "time": longest_ride['rent']['end_time'] - longest_ride['rent']['start_time']}
-    return total_distance, longest_ride
+    
+    if fastest_ride.get('reversed'):
+        top_ride = {"start_place": fastest_ride['rent']['end_place_name'], "end_place": fastest_ride['rent']['start_place_name'], "velocity": fastest_ride['velocity']}
+    else:
+        fastest_ride = {"start_place": fastest_ride['rent']['start_place_name'], "end_place": fastest_ride['rent']['end_place_name'], "velocity": fastest_ride['velocity']}
+    
+    return total_distance, longest_ride, fastest_ride
 
 
 

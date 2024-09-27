@@ -7,7 +7,7 @@ import requests
 import base64
 
 
-def distance_matrix_request(rentals, longest_ride):
+def distance_matrix_request(rentals, longest_ride, fastest_ride):
     origin_full = rentals[0]
     origin = {"lat": rentals[0]['start_place_lat'], "lng": rentals[0]['start_place_lng']}
     destinations = []
@@ -32,6 +32,10 @@ def distance_matrix_request(rentals, longest_ride):
 
         if longest_ride['distance'] < res['distance']['value']:
             longest_ride['distance'] = res['distance']['value']
+            longest_ride['rent'] = dest
+
+        if fastest_ride['velocity'] < (res['distance']['value'] /1000 ) / ((dest['end_time'] - dest['start_time'])/3600):
+            fastest_ride['velocity'] = (res['distance']['value'] /1000 ) / ((dest['end_time'] - dest['start_time'])/3600)
             longest_ride['rent'] = dest
     return total_distance
 
@@ -106,7 +110,7 @@ def __getZoom(lat_a, lng_a, lat_b, lng_b):
     lngZoom = math.log(1/latFrac) / math.log(2)
     latZoom = math.log(1/lngFrac) / math.log(2)
 
-    return math.ceil(max(lngZoom, latZoom))
+    return math.ceil(min(lngZoom, latZoom))
 
 
 def __find_bounds(rentals):

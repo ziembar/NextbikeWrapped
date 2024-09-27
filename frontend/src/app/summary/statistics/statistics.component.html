@@ -46,7 +46,7 @@
         </div>
         <div>
           
-          <p style="font-size: x-large;">
+          <p style="font-size: xx-large; margin-bottom: 4rem;">
             Oto <span *ngIf="isOriginal()">twoje </span>podsumowanie {{data.season_name.length == 4 ? 'sezonu ' : 'dni '}} <span style="font-weight: bold;">{{data.season_name}}</span>. <span *ngIf="!isOriginal()">Jesteś ciekaw swojego? <span style="cursor: pointer; font-weight: bold;" (click)="goToLogin()">Kliknij tutaj!</span></span> <span *ngIf="isOriginal()">Wybierz <a style="font-weight: bold; cursor: pointer;" (click)="showCalendar()">inny przedział czasu</a></span>
           </p>
 
@@ -54,16 +54,24 @@
   
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div class="bg-white p-6 rounded-lg shadow-md">
-              <h2 class="text-2xl font-bold mb-2"><p pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google">Przejechany dystans <i class="pi pi-question-circle"></i></p></h2>
+              <h2 class="text-2xl font-bold mb-2"><p pTooltip="Dystans liczony według najkrótszych tras między stacjami według Map Google. Rzeczywisty dystans może być dłuższy nawet o 20-30%.">Przejechany dystans <i class="pi pi-question-circle"></i></p></h2>
               <p class="text-4xl font-bold"  >{{ (data.total_distance / 1000).toFixed(1) }} km</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
               <h2 class="text-2xl font-bold mb-2">Wydane pieniądze</h2>
-              <p class="text-4xl font-bold">{{ data.total_cost }} zł</p>
+              <p style="color: rgb(182, 0, 0);" class="text-4xl font-bold">{{ data.total_cost }} zł</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <h2 class="text-2xl font-bold mb-2">Odzyskane pieniądze</h2>
+              <p style="color: rgb(10, 134, 31);" class="text-4xl font-bold">{{ data.total_gain }} zł</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
               <h2 class="text-2xl font-bold mb-2">Całkowity czas</h2>
               <p class="text-4xl font-bold">{{floor(data.total_time / 60) }} h, {{ (data.total_time % 60).toFixed(0) }} min</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <h2 class="text-2xl font-bold mb-2">Średnia prędkość</h2>
+              <p class="text-4xl font-bold">{{floor((data.total_distance /1000) / (data.total_time/60))}} km/h</p>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
               <h2 class="text-2xl font-bold mb-2">Liczba przejazdów</h2>
@@ -85,6 +93,23 @@
               <div>
                 <p class="text-4xl font-bold">{{(data.longest_ride.distance / 1000).toFixed(1)}} km</p>
                 <p class="text-4xl font-bold">{{(data.longest_ride.time / 60).toFixed(0)}} min</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-bold mb-4">Najszybszy przejazd</h2>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-lg font-semibold">{{data.fastest_ride.start_place}}</p>
+                <p class="text-lg font-semibold">{{data.fastest_ride.end_place}}</p>
+              </div>
+              <div class="dada">
+                <img src="assets/images/startstop.png" alt="start stop" class="h-16">
+                </div>
+
+              <div>
+                <p class="text-4xl font-bold">{{(data.fastest_ride.velocity).toFixed(1)}} km/h</p>
               </div>
             </div>
           </div>
