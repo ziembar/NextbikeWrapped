@@ -3,8 +3,6 @@ FROM node:alpine as build
 
 ARG API_URL
 
-RUN echo $(echo API_URL)
-
 WORKDIR /usr/src/app/frontend
 
 COPY frontend .
