@@ -3,6 +3,8 @@ FROM node:alpine as build
 
 ARG API_URL
 
+RUN echo $(echo API_URL)
+
 WORKDIR /usr/src/app/frontend
 
 COPY frontend .
@@ -13,7 +15,7 @@ RUN npm install -g @angular/cli
 
 RUN npm install
 
-RUN echo API_URL | /usr/src/app/frontend/startup.sh; exit 0
+RUN echo "${API_URL}" | /usr/src/app/frontend/startup.sh; exit 0
 RUN --mount=type=secret,id=apiurl,dst=/etc/secrets/apiurl cat /etc/secrets/apiurl | /usr/src/app/frontend/startup.sh; exit 0
 
 

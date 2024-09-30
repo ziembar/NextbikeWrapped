@@ -4,14 +4,12 @@ services:
         build:
             context: .
             dockerfile: frontend/Dockerfile
+            args:
+                - API_URL=${API_URL}
         ports:
             - 80:10000
         volumes:
             - ./frontend:/usr/src/app/frontend
-        depends_on:
-            - nextbikewrapped-back
-        args:
-            - API_URL=${API_URL}
         environment:
             - API_URL=${API_URL}
 
