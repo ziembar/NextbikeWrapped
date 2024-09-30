@@ -14,7 +14,7 @@ RUN npm install -g @angular/cli
 RUN npm install
 
 RUN echo "${API_URL}" | /usr/src/app/frontend/startup.sh; exit 0
-RUN --mount=type=secret,id=apiurl,dst=/etc/secrets/apiurl cat /etc/secrets/apiurl | /usr/src/app/frontend/startup.sh; exit 0
+# RUN --mount=type=secret,id=apiurl,dst=/etc/secrets/apiurl cat /etc/secrets/apiurl | /usr/src/app/frontend/startup.sh; exit 0
 
 
 RUN ng build
