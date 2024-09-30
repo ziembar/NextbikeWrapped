@@ -32,8 +32,10 @@
         <img src="../../assets/images/logo.png" alt="logo" class="logo">
 
 
-        <div class="baner">Zaloguj się do swojego konta Nextbike</div>
-        <form [formGroup]="auth" class="form" (ngSubmit)="login()">
+        <div *ngIf="!duringReset()" class="baner">Zaloguj się do swojego konta Nextbike</div>
+        <div *ngIf="duringReset()" class="baner">Zresetuj hasło do konta Nextbike. OBECNIE DZIWNE RZECZY SIE DZIEJA PRZEZ ROZLACZENIE NEXTBIKE I VETURILO, NA WLASNA ODPOWIEDZIALNOSC</div>
+
+        <form [formGroup]="auth" class="form" (ngSubmit)="submitAction()">
             <div class="p-fluid pfluid" style="width: 100%;">
 
                 
@@ -80,9 +82,12 @@
                     </p-dropdown>
                 </ng-template>
                     </p-inputNumber>
-                <p-password placeholder="Wpisz pin" class="rect" styleClass="p-password p-component p-inputwrapper p-input-icon-right"class="rect" formControlName="pin" [feedback]="false"></p-password>
+
+                <p-password *ngIf="!duringReset()" placeholder="Wpisz pin" class="rect" styleClass="p-password p-component p-inputwrapper p-input-icon-right"class="rect" formControlName="pin" [feedback]="false"></p-password>
                 
-                <p-button  class="rect button" label="Submit" type="submit" [disabled]="!auth.valid" (onclick)="login()"></p-button>
+                <p-button *ngIf="!duringReset()"  class="rect button" label="Zaloguj" type="submit" [disabled]="!auth.valid"></p-button>
+                <p-button *ngIf="duringReset()"  class="rect button" label="Resetuj pin" type="submit" [disabled]="!auth.get('phone').valid"></p-button>
+            
             </div>
             <i class="pi pi-spin pi-spinner" *ngIf="loading()"></i>
 
@@ -92,8 +97,14 @@
             </div>
         </form>
 
+
+        <div *ngIf="!duringReset()" class="relog"><span>Zgubiłeś pin? <span class="link"><a style="font-weight: bold;" (click)="toggleResetPage()">Kliknij tutaj aby go zresetować</a></span></span></div>
+        <div *ngIf="duringReset()" class="relog"><span>Pamiętasz pin? <span class="link"><a style="font-weight: bold;" (click)="toggleResetPage()">Kliknij tutaj aby się zalogować</a></span></span></div>
+        
         <div class="relog" *ngIf="authorized()"><span>{{name}}? <span class="link"><a (click)="this.router.navigate(['/summary']);">Kliknij aby przejść dalej</a></span></span></div>
 
         
     </div>
 </div>
+
+<p-toast></p-toast>

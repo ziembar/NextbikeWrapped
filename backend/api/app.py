@@ -14,12 +14,11 @@ import pickle
 app = Flask(__name__)
 cors = CORS(app)
 
-@app.route('/api/test', methods=['POST', 'GET'])
-def hello():
+@app.route('/api/resetpin', methods=['POST'])
+def reset():
     phone = str(request.json['phone'])
-    pin = str(request.json['pin'])
-    cookie, name = get_cookie(phone, pin)
-    return jsonify({"cookie": cookie,"name": name})
+    code = resetPin(phone)
+    return jsonify({"code": code})
 
 
 

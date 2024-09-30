@@ -6,6 +6,7 @@ import requests
 import json
 from google_requests import *
 import jwt
+from urllib.parse import urlencode
 
 
 def get_api_key():
@@ -34,6 +35,25 @@ def get_login_key(phone, pin):
     exp = decoded_token.get("exp")
 
     return response.json()['user']['loginkey'], response.json()['user']['screen_name'], exp
+
+def resetPin(phone):
+    api_key = get_api_key()
+
+    if not phone.startswith('+'):
+        phone = '+' + phone
+    params = {
+        "api_key": api_key,
+        "mobile": phone
+    }
+    headers = {
+        'Accept-Encoding': 'gzip'
+    }
+
+    url = f"https://api.nextbike.net/api/v1.1/pinRecover.json?{urlencode(params)}"
+
+    response = requests.post(url, headers)
+    return response.status_code
+
 
 def get_events(loginkey):
     api_key = get_api_key()

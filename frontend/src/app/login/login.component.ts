@@ -4,21 +4,25 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { InputNumber } from 'primeng/inputnumber';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  providers: [MessageService]
 })
 export class LoginComponent {
 
 
-  constructor(private apiService: ApiService, public router: Router, private formBuilder: FormBuilder) {}
+  constructor(private apiService: ApiService, public router: Router, private formBuilder: FormBuilder,  private toast: MessageService) {}
   @ViewChild('inputnumber') inputnumber: InputNumber;
 
   error = signal(false)
   loading = signal(false)
   authorized = signal(false)
+  duringReset = signal(false)
+
 
   error_message = 'Wprowadzono niepoprawne dane. Spróbuj ponownie.'
 
@@ -34,7 +38,7 @@ export class LoginComponent {
     this.auth = this.formBuilder.group({
       phone: [, [Validators.required, Validators.pattern(/^[0-9]{9}$/), Validators.minLength(9), Validators.maxLength(9)]],
       pin: [, [Validators.required, Validators.minLength(5), Validators.maxLength(6)]]
-    });
+    }, {updateOn: 'change'});
 
     setTimeout(
       ()=>{this.inputnumber.spin = () => {}}, 300)
@@ -72,6 +76,43 @@ this.selectedCountry = { name: 'Poland', code: 'PL', prefix: '+48' }
 countries: any[] | undefined;
 
 selectedCountry: any;
+
+toggleResetPage(){
+this.duringReset.set(!this.duringReset());
+}
+
+
+submitAction(){
+  if(this.duringReset()){
+    this.resetPin();
+  }else{
+    this.login();
+  }
+}
+
+resetPin(){
+  console.log("RESET")
+  this.loading.set(true)
+  const phone = this.selectedCountry.prefix.replace('+', '') + this.auth.get('phone').value;
+  this.apiService.resetPin(phone).subscribe((response: any)=> {
+    if(response.code !== 200){
+    this.toast.add({life:5000, severity: 'error', summary: 'Ups.. coś poszło nie tak', detail: "Spróbuj ponownie później..." });
+    this.toggleResetPage();
+    this.loading.set(false)
+
+    return
+    }
+    else{
+      this.toast.add({life:5000, severity: 'success', summary: 'Udało się!', detail: "Pin został wysłany na twój numer" });
+      this.toggleResetPage();
+      this.loading.set(false)
+
+    }
+
+
+  })
+}
+
 
   login() {
     this.loading.set(true)

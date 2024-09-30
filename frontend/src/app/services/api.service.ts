@@ -22,7 +22,9 @@ export class ApiService {
     return moment.unix(date).format('DD.MM.YYYY');
   }
 
-
+  resetPin(number: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/api/resetpin`, {"phone": number });
+  }
 
   login(number: string, pin: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/login`, {"phone": number, "pin": pin });
