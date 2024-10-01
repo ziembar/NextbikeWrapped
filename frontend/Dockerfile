@@ -27,7 +27,7 @@ RUN rm /usr/share/nginx/html/index.html
 COPY --from=build /usr/src/app/frontend/dist/frontend/browser /usr/share/nginx/html
 COPY frontend/nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 10000
+EXPOSE 80
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]

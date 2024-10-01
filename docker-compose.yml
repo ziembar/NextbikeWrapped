@@ -1,5 +1,10 @@
 version: "3"
 services:
+    certbot:
+        image: certbot/certbot:latest
+        volumes:
+        - ./certbot/www/:/var/www/certbot/:rw
+        - ./certbot/conf/:/etc/letsencrypt/:rw
     nextbikewrapped-front:
         build:
             context: .
@@ -7,9 +12,13 @@ services:
             args:
                 - API_URL=${API_URL}
         ports:
-            - 80:10000
+            - 80:80
+            - 443:443
+        restart: always
         volumes:
             - ./frontend:/usr/src/app/frontend
+            - ./certbot/www:/var/www/certbot/:ro
+        
         environment:
             - API_URL=${API_URL}
 
