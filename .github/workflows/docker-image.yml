@@ -10,8 +10,12 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v4
     - name: Build the Docker image
+      run: |
+        cd /home/bartek/actions-runner/_work/NextbikeWrapped
+        rm NextbikeWrapped -R || true
+        ls -la ./
+    - uses: actions/checkout@v4
       env:
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         GOOGLE_SIGNING_KEY: ${{ secrets.GOOGLE_SIGNING_KEY }}
