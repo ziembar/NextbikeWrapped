@@ -13,7 +13,7 @@ jobs:
     - name: Remove old files
       run: |
         cd /home/bartek/actions-runner/_work/NextbikeWrapped
-        rm -R NextbikeWrapped || true
+        rm -R NextbikeWrapped/* || true
         ls -la ./
 
     - name: Checkout the code
