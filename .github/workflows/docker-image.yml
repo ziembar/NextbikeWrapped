@@ -1,0 +1,32 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "local-server" ]
+
+jobs:
+
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout the code
+      run: |
+        whoami
+        cd /home/bartek/actions-runner/_work/NextbikeWrapped/NextbikeWrapped
+        git pull
+
+    - name: Build and run Docker image
+      env:
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        GOOGLE_SIGNING_KEY: ${{ secrets.GOOGLE_SIGNING_KEY }}
+        NEO4J_URI: ${{ secrets.NEO4J_URI }}
+        NEO4J_USERNAME: ${{ secrets.NEO4J_USERNAME }}
+        NEO4J_PASSWORD: ${{ secrets.API_NEO4J_PASSWORDURL }}
+        AURA_INSTANCEID: ${{ secrets.AURA_INSTANCEID }}
+        AURA_INSTANCENAME: ${{ secrets.AURA_INSTANCENAME }}
+        MONGODB_USER: ${{ secrets.MONGODB_USER }}
+        MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        API_URL: ${{ secrets.API_URL }}
+      run: sudo docker compose up --build
