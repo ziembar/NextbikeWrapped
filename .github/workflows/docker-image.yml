@@ -10,7 +10,17 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Build the Docker imageenv:
+    - name: Remove old files
+      run: |
+        cd /home/bartek/actions-runner/_work/NextbikeWrapped
+        rm -R NextbikeWrapped || true
+        ls -la ./
+
+    - name: Checkout the code
+      uses: actions/checkout@v4
+
+    - name: Build and run Docker image
+      env:
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         GOOGLE_SIGNING_KEY: ${{ secrets.GOOGLE_SIGNING_KEY }}
         NEO4J_URI: ${{ secrets.NEO4J_URI }}
@@ -22,10 +32,4 @@ jobs:
         MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         MONGODB_URI: ${{ secrets.MONGODB_URI }}
         API_URL: ${{ secrets.API_URL }}
-      run: |
-        cd /home/bartek/actions-runner/_work/NextbikeWrapped
-        rm NextbikeWrapped -R || true
-        ls -la ./
-    - uses: actions/checkout@v4
-      
       run: docker compose up --build
