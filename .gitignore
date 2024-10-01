@@ -10,7 +10,7 @@ backend/src/settings//__pycache__/
 backend/src/settings/settings.env
 backend/src/__pycache__/*
 backend/backenv/*
-
+backend/__pycache__
 
 settings.env
 .env
