@@ -12,6 +12,7 @@ jobs:
     steps:
     - name: Checkout the code
       run: |
+        whoami
         cd /home/bartek/actions-runner/_work/NextbikeWrapped/NextbikeWrapped
         git pull
 
