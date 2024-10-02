@@ -3,8 +3,9 @@ services:
     certbot:
         image: certbot/certbot:latest
         volumes:
-        - ./certbot/www/:/var/www/certbot/:rw
-        - ./certbot/conf/:/etc/letsencrypt/:rw
+        - ./certbot/www:/var/www/certbot
+        - ./certbot/conf:/etc/letsencrypt
+        command: certonly --webroot -w /var/www/certbot --force-renewal --email bartoszzziemba@gmail.com -d nextbikewrapped.online --agree-tos
     nextbikewrapped-front:
         build:
             context: .
@@ -17,7 +18,9 @@ services:
         restart: always
         volumes:
             - ./frontend:/usr/src/app/frontend
-            - ./certbot/www:/var/www/certbot/:ro
+            - ./certbot/www:/var/www/certbot
+            - ./certbot/conf:/etc/letsencrypt
+
         
         environment:
             - API_URL=${API_URL}
