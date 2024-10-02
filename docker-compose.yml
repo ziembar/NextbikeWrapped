@@ -5,7 +5,7 @@ services:
         volumes:
         - ./certbot/www:/var/www/certbot
         - ./certbot/conf:/etc/letsencrypt
-        command: certonly --webroot -w /var/www/certbot --force-renewal --email bartoszzziemba@gmail.com -d nextbikewrapped.online --agree-tos
+        command: certonly --webroot -w /var/www/certbot --test-cert --email bartoszzziemba@gmail.com -d nextbikewrapped.online --agree-tos
     nextbikewrapped-front:
         build:
             context: .
