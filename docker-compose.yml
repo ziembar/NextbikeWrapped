@@ -21,6 +21,7 @@ services:
             - ./certbot/www:/var/www/certbot
             - ./certbot/conf:/etc/letsencrypt
             - ./frontend/nginx.conf:/etc/nginx/nginx.conf
+            - .logs/frontend:/var/log/nginx
 
         
         environment:
@@ -34,6 +35,8 @@ services:
             - 5000:5000
         volumes:
             - ./backend:/usr/src/app/backend
+            - .logs/backend/error.log:/usr/src/app/backend/error.log
+
         environment:
             - GOOGLE_API_KEY=${GOOGLE_API_KEY}
             - GOOGLE_SIGNING_KEY=${GOOGLE_SIGNING_KEY}
