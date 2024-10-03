@@ -35,7 +35,7 @@ services:
             - 5000:5000
         volumes:
             - ./backend:/usr/src/app/backend
-            - .logs/backend:/usr/src/app/backend/logs
+            - .logs/backend:/usr/src/app/backend/
 
         environment:
             - GOOGLE_API_KEY=${GOOGLE_API_KEY}

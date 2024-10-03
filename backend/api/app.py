@@ -15,7 +15,7 @@ import logging
 app = Flask(__name__)
 cors = CORS(app)
 
-logging.basicConfig(filename='../logs/error.log',level=logging.DEBUG)
+logging.basicConfig(filename='../error.log',level=logging.DEBUG)
 
 @app.route('/api/resetpin', methods=['POST'])
 def reset():
