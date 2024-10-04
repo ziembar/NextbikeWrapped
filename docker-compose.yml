@@ -15,6 +15,10 @@ services:
         ports:
             - 80:80
             - 443:443
+        networks:
+            main:
+                aliases:
+                    - front
         restart: always
         volumes:
             - ./frontend:/usr/src/app/frontend
@@ -33,9 +37,15 @@ services:
             dockerfile: backend/Dockerfile
         ports:
             - 5000:5000
+        networks:
+            main:
+                aliases:
+                    - back
         volumes:
             - ./backend:/usr/src/app/backend
             - ./logs/backend:/usr/src/app/backend/logs
+            - ./certbot/www:/var/www/certbot
+            - ./certbot/conf:/etc/letsencrypt
 
         environment:
             - GOOGLE_API_KEY=${GOOGLE_API_KEY}
@@ -46,3 +56,5 @@ services:
             - AURA_INSTANCEID=${AURA_INSTANCEID}
             - AURA_INSTANCENAME=${AURA_INSTANCENAME}
             - MONGODB_URI=${MONGODB_URI}
+networks:
+    main:
