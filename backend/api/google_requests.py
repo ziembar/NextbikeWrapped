@@ -19,24 +19,28 @@ def distance_matrix_request(rentals, longest_ride, fastest_ride):
     gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
     result = gmaps.distance_matrix(origin, destinations, mode='bicycling')
 
+
     print("1 request, destinations - ", len(destinations))
     total_distance = 0
 
     for dest, res in zip(rentals, result['rows'][0]['elements']):
-        amount = dest.get('amount')
-        if dest['start_place_type'] == 0 and dest['end_place_type'] == 0:
-            add_distance_relation(getDriver(), origin_full['start_place'], dest['end_place'],\
-                res['distance']['value'], res['duration']['value'])
+        try:
+            amount = dest.get('amount')
+            if dest['start_place_type'] == 0 and dest['end_place_type'] == 0:
+                add_distance_relation(getDriver(), origin_full['start_place'], dest['end_place'],\
+                    res['distance']['value'], res['duration']['value'])
 
-        total_distance += res['distance']['value'] * amount
+            total_distance += res['distance']['value'] * amount
 
-        if longest_ride['distance'] < res['distance']['value']:
-            longest_ride['distance'] = res['distance']['value']
-            longest_ride['rent'] = dest
+            if longest_ride['distance'] < res['distance']['value']:
+                longest_ride['distance'] = res['distance']['value']
+                longest_ride['rent'] = dest
 
-        if fastest_ride['velocity'] < (res['distance']['value'] /1000 ) / ((dest['end_time'] - dest['start_time'])/3600):
-            fastest_ride['velocity'] = (res['distance']['value'] /1000 ) / ((dest['end_time'] - dest['start_time'])/3600)
-            longest_ride['rent'] = dest
+            if fastest_ride['velocity'] < (res['distance']['value'] /1000 ) / ((dest['end_time'] - dest['start_time'])/3600):
+                fastest_ride['velocity'] = (res['distance']['value'] /1000 ) / ((dest['end_time'] - dest['start_time'])/3600)
+                longest_ride['rent'] = dest
+        except:
+            continue
     return total_distance
 
 
