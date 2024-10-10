@@ -102,7 +102,7 @@ def filter_same_station(data):
     for rental in data:
         start_station = rental['start_place']
         end_station = rental['end_place']
-        if start_station != end_station:
+        if start_station != end_station and rental['end_place_lng'] !=0 and rental['end_place_lat'] != 0 and rental['start_place_lng'] !=0 and rental['start_place_lat'] != 0:
             filtered_data.append(rental)
     return filtered_data
 
