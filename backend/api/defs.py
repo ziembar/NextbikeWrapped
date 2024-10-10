@@ -10,9 +10,12 @@ from urllib.parse import urlencode
 
 
 def get_api_key():
-    req = requests.get("https://webview.nextbike.net/getAPIKey.json", headers={ "user-agent": "nextbike-av4"})
-    if req.ok:
-        return req.json()['apiKey']
+    # req = requests.get("https://webview.nextbike.net/getAPIKey.json", headers={ "user-agent": "nextbike-av4"})
+    # if req.ok:
+    #     return req.json()['apiKey']
+    
+    ## WHY NEXTBIKE WHY
+    return 'OobHOQY4g9UuOT1S'
 
 def get_login_key(phone, pin):
     api_key = get_api_key()
@@ -26,6 +29,9 @@ def get_login_key(phone, pin):
     }
 
     response = requests.post(url, data=data)
+    with open('../../logs/data.json', 'a') as log_file:
+        json.dump(response.json(), log_file)
+        log_file.write('\n')
 
     if 'error' in response.json():
         raise Exception(f"Login failed with code {response.json()['error']['code']}. Message: {response.json()['error']['message']}")

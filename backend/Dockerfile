@@ -6,7 +6,7 @@ WORKDIR /usr/src/app/backend
 
 COPY backend .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 EXPOSE 5000
 WORKDIR /usr/src/app/backend/api
